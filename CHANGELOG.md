@@ -2,6 +2,14 @@
 
 ## 2026-07-13
 
+### U04: Public Homepage and Platform Selection
+
+- Replaced the foundation placeholder homepage with a mobile-first public support entry screen.
+- Added simple English and Telugu copy for first-time and rural users.
+- Added large Instagram, Facebook, and YouTube platform selection buttons.
+- Added client-side selected-platform feedback without API calls or request creation.
+- Updated homepage metadata, styling, tests, README, architecture notes, implementation plan, AGENTS, and status tracking.
+
 ### U03: Admin Authentication and Authorization
 
 - Added secure admin login and logout endpoints using Argon2 password verification and JWT session cookies.

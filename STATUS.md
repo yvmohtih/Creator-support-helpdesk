@@ -2,7 +2,7 @@
 
 ## Current Unit
 
-U03: Admin Authentication and Authorization
+U04: Public Homepage and Platform Selection
 
 ## Status
 
@@ -45,11 +45,18 @@ July 13, 2026
 - Authenticated admin placeholder page
 - Unauthorized page
 - Auth loading state
+- Public mobile-first homepage
+- Instagram, Facebook, and YouTube platform selection buttons
+- English and Telugu public helper copy
+- Client-side selected-platform feedback
 
 ## What Does Not Exist Yet
 
 - Registration
+- Problem selection
 - Ticket submission
+- Database request creation
+- Request tracking page
 - Dashboard business UI
 - Product APIs
 - Business logic
@@ -91,10 +98,16 @@ Completed successfully:
 - Invalid session token returned `401 Unauthorized`
 - Logout cleared the session cookie
 - Post-logout `/api/v1/admin/auth/me` returned `401 Unauthorized`
+- Public homepage returned `200 OK` at `http://127.0.0.1:3000`
+- Homepage displayed Instagram, Facebook, and YouTube support options
+- Homepage displayed English and Telugu helper copy
+- Platform selection updated local feedback without navigation or API request creation
+- Mobile viewport check at 390px confirmed full-width large buttons and no horizontal overflow
+- Desktop viewport check at 1024px confirmed three-column platform layout and no horizontal overflow
 
 ## Notes
 
-U03 is WORKING. Admin login, logout, protected routes, role authorization, tests, build, database migration status, and production startup verification pass.
+U04 is WORKING. Public homepage, platform selection feedback, tests, build, startup, and visual verification pass.
 
 Implemented U02 work:
 
@@ -111,5 +124,12 @@ Implemented U03 work:
 - Admin guards for session validation and role checks.
 - Protected admin route foundation for later dashboard/support-request units.
 - Mobile-friendly admin login UI and unauthorized page.
+
+Implemented U04 work:
+
+- Public homepage for rural, non-technical, mobile-first users.
+- Large platform selection buttons for Instagram, Facebook, and YouTube.
+- Bilingual English/Telugu helper text.
+- Local platform selection feedback with no API call and no request creation.
 
 Do not run production build commands while development watchers are active; Next.js and NestJS both write generated output during those workflows.

@@ -4,7 +4,7 @@ Mobile-first social media technical support platform for rural users, small crea
 
 ## Current Status
 
-Unit U03 admin authentication and authorization is implemented and verified. Public user login, ticket submission, dashboards, product APIs, and business logic are intentionally not implemented yet.
+Unit U04 public homepage and platform selection is implemented and verified. Problem selection, request submission, tracking, dashboards, product APIs, and business logic are intentionally not implemented yet.
 
 ## Stack
 
@@ -84,6 +84,16 @@ http://127.0.0.1:3000/admin/login
 
 Protected admin routes redirect unauthenticated users to the login page. The dashboard screen is intentionally only an authenticated placeholder in U03.
 
+## Public Homepage
+
+The public homepage is available at:
+
+```text
+http://127.0.0.1:3000
+```
+
+It introduces the service in simple English and Telugu and lets users choose Instagram, Facebook, or YouTube. Platform selection is local UI state only in U04; it does not create a request or call an API.
+
 ## Start
 
 Development:
@@ -120,11 +130,14 @@ Included:
 - Issue category seed data
 - Database-focused schema tests
 - Admin login, logout, session validation, and role authorization for `admin` and `support_agent`
+- Public homepage with mobile-first platform selection
 
 Not included:
 
 - Registration
+- Problem selection
 - Ticket submission
+- Request tracking
 - Admin dashboard business UI
 - Product APIs
 - Business logic

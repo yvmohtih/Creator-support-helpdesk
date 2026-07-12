@@ -3,7 +3,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Creator Support',
-  description: 'Social media support platform foundation.',
+  description: 'Simple help for Instagram, Facebook, and YouTube problems.',
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

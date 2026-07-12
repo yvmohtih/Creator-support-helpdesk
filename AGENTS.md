@@ -10,7 +10,7 @@
 
 ## Current Unit Boundary
 
-U03 implements administrator authentication and authorization only. It must not implement public user registration, ticket submission, admin dashboard business UI, support request workflows, internal-note workflows, status update workflows, file upload APIs, or other future-unit business logic.
+U04 implements only the public homepage and platform selection experience. It must not implement problem selection, problem submission forms, database request creation, request tracking pages, admin dashboard business UI, support request workflows, internal-note workflows, status update workflows, file upload APIs, or other future-unit business logic.
 
 ## Development Commands
 

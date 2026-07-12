@@ -1,8 +1,14 @@
 :root {
-  --background: #f9fafb;
-  --foreground: #111827;
-  --primary: #1e40af;
-  --border: #d1d5db;
+  --background: #f7f8fb;
+  --foreground: #172033;
+  --primary: #1666c5;
+  --primary-strong: #0f4f9f;
+  --border: #d7deea;
+  --surface: #ffffff;
+  --soft-blue: #e8f2ff;
+  --soft-green: #e9f8ef;
+  --soft-red: #fff0f0;
+  --muted: #526071;
 }
 
 * {
@@ -23,6 +29,10 @@ body {
     sans-serif;
 }
 
+body {
+  font-size: 16px;
+}
+
 button,
 input,
 textarea,
@@ -32,6 +42,170 @@ select {
 
 a {
   color: inherit;
+}
+
+.public-home {
+  min-height: 100vh;
+  padding: 18px;
+}
+
+.home-shell {
+  display: grid;
+  gap: 22px;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.home-intro {
+  padding: 26px 2px 4px;
+}
+
+.home-intro h1 {
+  max-width: 620px;
+  margin: 0;
+  font-size: 34px;
+  line-height: 1.08;
+}
+
+.home-subtitle,
+.home-telugu {
+  max-width: 620px;
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.home-telugu {
+  color: #233a5f;
+  font-weight: 700;
+}
+
+.platform-section {
+  display: grid;
+  gap: 16px;
+}
+
+.section-kicker {
+  margin: 0 0 6px;
+  color: var(--primary);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.platform-section h2,
+.home-note h2 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.platform-list {
+  display: grid;
+  gap: 12px;
+}
+
+.platform-option {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: 14px;
+  min-height: 96px;
+  width: 100%;
+  place-items: stretch;
+  align-items: center;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--foreground);
+  padding: 14px;
+  text-align: left;
+}
+
+.platform-option:hover,
+.platform-option:focus-visible,
+.platform-option[aria-pressed='true'] {
+  border-color: var(--primary);
+  outline: 3px solid var(--soft-blue);
+  outline-offset: 2px;
+}
+
+.platform-option:nth-child(1) .platform-icon {
+  background: var(--soft-red);
+  color: #9f1239;
+}
+
+.platform-option:nth-child(2) .platform-icon {
+  background: var(--soft-blue);
+  color: #0f4f9f;
+}
+
+.platform-option:nth-child(3) .platform-icon {
+  background: var(--soft-green);
+  color: #126b3a;
+}
+
+.platform-icon {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.platform-name,
+.platform-telugu,
+.platform-help {
+  display: block;
+}
+
+.selection-status {
+  min-height: 48px;
+  margin: 2px 0 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--soft-blue);
+  color: #18345c;
+  padding: 12px 14px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.platform-name {
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.platform-telugu {
+  margin-top: 2px;
+  color: #26364d;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.platform-help {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.home-note {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fefefe;
+  padding: 16px;
+}
+
+.home-note p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 .auth-page {
@@ -63,7 +237,7 @@ a {
 }
 
 .muted {
-  color: #4b5563;
+  color: var(--muted);
   font-size: 16px;
   line-height: 1.5;
 }
@@ -104,6 +278,17 @@ button,
   text-decoration: none;
 }
 
+button:hover,
+.button-link:hover {
+  background: var(--primary-strong);
+}
+
+button.platform-option:hover,
+button.platform-option:focus-visible {
+  background: var(--surface);
+  color: var(--foreground);
+}
+
 button:disabled {
   cursor: not-allowed;
   opacity: 0.7;
@@ -115,4 +300,35 @@ button:disabled {
   background: #fef2f2;
   color: #991b1b;
   padding: 10px 12px;
+}
+
+@media (min-width: 720px) {
+  .public-home {
+    padding: 34px;
+  }
+
+  .platform-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .platform-option {
+    grid-template-columns: 1fr;
+    align-content: start;
+    min-height: 230px;
+  }
+}
+
+@media (max-width: 420px) {
+  .public-home {
+    padding: 14px;
+  }
+
+  .home-intro h1 {
+    font-size: 30px;
+  }
+
+  .home-subtitle,
+  .home-telugu {
+    font-size: 17px;
+  }
 }
