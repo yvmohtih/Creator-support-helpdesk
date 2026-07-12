@@ -1,7 +1,8 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
-import { supportPlatforms } from './home-content';
+import { supportPlatforms } from './public-help-content';
 
 export function PlatformSelector() {
   const [selectedPlatform, setSelectedPlatform] = useState<(typeof supportPlatforms)[number]>();
@@ -10,12 +11,11 @@ export function PlatformSelector() {
     <>
       <div className="platform-list">
         {supportPlatforms.map((platform) => (
-          <button
-            aria-pressed={selectedPlatform?.name === platform.name}
+          <Link
             className="platform-option"
+            href={`/get-help?platform=${platform.slug}`}
             key={platform.name}
             onClick={() => setSelectedPlatform(platform)}
-            type="button"
           >
             <span className="platform-icon" aria-hidden="true">
               {platform.shortName}
@@ -25,7 +25,7 @@ export function PlatformSelector() {
               <span className="platform-telugu">{platform.teluguName}</span>
               <span className="platform-help">{platform.helpText}</span>
             </span>
-          </button>
+          </Link>
         ))}
       </div>
 

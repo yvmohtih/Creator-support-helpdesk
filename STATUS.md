@@ -2,7 +2,7 @@
 
 ## Current Unit
 
-U04: Public Homepage and Platform Selection
+U05: Problem Category Selection
 
 ## Status
 
@@ -49,11 +49,18 @@ July 13, 2026
 - Instagram, Facebook, and YouTube platform selection buttons
 - English and Telugu public helper copy
 - Client-side selected-platform feedback
+- Public `/get-help` category selection route
+- Safe platform validation for Instagram, Facebook, YouTube, and Other
+- English and Telugu problem category content
+- Large touch-friendly category cards
+- `/submit-request` placeholder that shows selected platform and category
+- Invalid platform and missing category fallback screens
 
 ## What Does Not Exist Yet
 
 - Registration
-- Problem selection
+- Full support request form
+- Screenshot upload
 - Ticket submission
 - Database request creation
 - Request tracking page
@@ -104,10 +111,18 @@ Completed successfully:
 - Platform selection updated local feedback without navigation or API request creation
 - Mobile viewport check at 390px confirmed full-width large buttons and no horizontal overflow
 - Desktop viewport check at 1024px confirmed three-column platform layout and no horizontal overflow
+- `/get-help?platform=instagram` displayed the Instagram category screen
+- `/get-help?platform=bad` displayed a friendly invalid-platform message and home button
+- `/get-help?platform=instagram&lang=te` displayed Telugu screen text and categories
+- Selecting a category routed to `/submit-request?platform=instagram&category=account-disabled&lang=te`
+- `/submit-request` placeholder displayed the selected platform/category and no form inputs
+- `/submit-request?platform=instagram` displayed the missing-category fallback
+- Mobile viewport check at 390px confirmed category cards are full-width, at least 96px tall, and have no horizontal overflow
+- Homepage platform cards now navigate to `/get-help`
 
 ## Notes
 
-U04 is WORKING. Public homepage, platform selection feedback, tests, build, startup, and visual verification pass.
+U05 is WORKING. Problem category selection, language switching, placeholder routing, invalid states, tests, build, startup, and visual verification pass.
 
 Implemented U02 work:
 
@@ -131,5 +146,12 @@ Implemented U04 work:
 - Large platform selection buttons for Instagram, Facebook, and YouTube.
 - Bilingual English/Telugu helper text.
 - Local platform selection feedback with no API call and no request creation.
+
+Implemented U05 work:
+
+- Public category selection for Instagram, Facebook, YouTube, and Other.
+- Safe query validation for platform, language, and category.
+- English/Telugu category names, descriptions, buttons, and error messages.
+- Submit-request placeholder with no inputs, upload, API call, or database write.
 
 Do not run production build commands while development watchers are active; Next.js and NestJS both write generated output during those workflows.

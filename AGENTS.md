@@ -10,7 +10,7 @@
 
 ## Current Unit Boundary
 
-U04 implements only the public homepage and platform selection experience. It must not implement problem selection, problem submission forms, database request creation, request tracking pages, admin dashboard business UI, support request workflows, internal-note workflows, status update workflows, file upload APIs, or other future-unit business logic.
+U05 implements only public problem category selection after a platform is chosen. It must not implement the full support request form, screenshot upload, database request creation, request tracking pages, admin dashboard business UI, support request workflows, internal-note workflows, status update workflows, file upload APIs, or other future-unit business logic.
 
 ## Development Commands
 

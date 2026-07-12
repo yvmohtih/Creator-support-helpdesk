@@ -4,7 +4,7 @@ Mobile-first social media technical support platform for rural users, small crea
 
 ## Current Status
 
-Unit U04 public homepage and platform selection is implemented and verified. Problem selection, request submission, tracking, dashboards, product APIs, and business logic are intentionally not implemented yet.
+Unit U05 problem category selection is implemented and verified. Full request submission, screenshot upload, request tracking, dashboards, product APIs, and database request creation are intentionally not implemented yet.
 
 ## Stack
 
@@ -92,7 +92,25 @@ The public homepage is available at:
 http://127.0.0.1:3000
 ```
 
-It introduces the service in simple English and Telugu and lets users choose Instagram, Facebook, or YouTube. Platform selection is local UI state only in U04; it does not create a request or call an API.
+It introduces the service in simple English and Telugu and lets users choose Instagram, Facebook, YouTube, or Other. Platform selection routes to `/get-help`.
+
+## Problem Category Selection
+
+Problem category selection is available at:
+
+```text
+http://127.0.0.1:3000/get-help?platform=instagram
+```
+
+Supported platforms are `instagram`, `facebook`, `youtube`, and `other`. The page supports English and Telugu with `lang=en` or `lang=te`.
+
+Selecting a category routes to:
+
+```text
+/submit-request?platform=instagram&category=account-disabled&lang=en
+```
+
+In U05 this route is only a placeholder. It shows the selected platform/category and does not create a support request.
 
 ## Start
 
@@ -131,12 +149,14 @@ Included:
 - Database-focused schema tests
 - Admin login, logout, session validation, and role authorization for `admin` and `support_agent`
 - Public homepage with mobile-first platform selection
+- Public problem category selection and submit-request placeholder
 
 Not included:
 
 - Registration
-- Problem selection
-- Ticket submission
+- Full support request form
+- Screenshot upload
+- Ticket submission and database request creation
 - Request tracking
 - Admin dashboard business UI
 - Product APIs

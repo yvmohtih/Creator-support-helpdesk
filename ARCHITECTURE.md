@@ -12,11 +12,15 @@
 
 ## Current Scope
 
-U04 adds the public mobile-first homepage and client-side platform selection only. It does not add problem selection, ticket submission, database request creation, tracking pages, admin dashboard business UI, support request workflows, internal-note workflows, status update workflows, or product APIs.
+U05 adds public problem category selection and a submit-request placeholder only. It does not add the full support request form, screenshot upload, ticket submission, database request creation, tracking pages, admin dashboard business UI, support request workflows, internal-note workflows, status update workflows, or product APIs.
 
 ## Public Homepage Overview
 
 The root web route `/` introduces the service in simple English and Telugu. It provides large tap targets for Instagram, Facebook, and YouTube. Selecting a platform updates local UI state only; no API call or database write occurs in U04.
+
+## Problem Category Selection Overview
+
+The `/get-help` route validates the `platform` query parameter for `instagram`, `facebook`, `youtube`, or `other`. It renders localized English/Telugu category choices from shared frontend content based on the issue categories created in U02. Selecting a category navigates to `/submit-request` with safe query parameters. U05 keeps `/submit-request` as a placeholder and performs no API call or database write.
 
 ## Authentication Overview
 

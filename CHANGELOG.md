@@ -2,6 +2,16 @@
 
 ## 2026-07-13
 
+### U05: Problem Category Selection
+
+- Added `/get-help` with safe platform validation for Instagram, Facebook, YouTube, and Other.
+- Added English/Telugu language switching for problem category selection.
+- Added large touch-friendly problem category cards with icons, descriptions, and selected state.
+- Added `/submit-request` placeholder that preserves platform, language, and category without creating a request.
+- Updated homepage platform cards to navigate into the U05 category flow.
+- Added invalid-platform and missing-category fallback screens.
+- Updated shared content tests, README, architecture notes, implementation plan, AGENTS, and status tracking.
+
 ### U04: Public Homepage and Platform Selection
 
 - Replaced the foundation placeholder homepage with a mobile-first public support entry screen.
