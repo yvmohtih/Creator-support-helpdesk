@@ -4,14 +4,14 @@ Mobile-first social media technical support platform for rural users, small crea
 
 ## Current Status
 
-Unit U02 database schema work is implemented but still needs verification against a live PostgreSQL development database. Login, ticket submission, dashboards, product APIs, and business logic are intentionally not implemented yet.
+Unit U03 admin authentication and authorization is implemented and verified. Public user login, ticket submission, dashboards, product APIs, and business logic are intentionally not implemented yet.
 
 ## Stack
 
 - Frontend: Next.js, React, TypeScript
 - Backend: NestJS, TypeScript
 - Database: PostgreSQL via Prisma
-- Auth foundation: Passport/JWT dependencies and secure config placeholders
+- Auth: Nest JWT sessions with HTTP-only admin cookies
 - File storage foundation: S3-compatible storage client placeholder
 - Logging: Pino
 - Testing: Vitest
@@ -39,6 +39,7 @@ Useful commands:
 npm run prisma:generate -w apps/api
 npm run prisma:migrate:dev -w apps/api
 npm run prisma:seed -w apps/api
+npm run admin:seed -w apps/api
 ```
 
 U02 migration:
@@ -60,6 +61,28 @@ RB-2026-AB12CD
 ```
 
 The field and database check constraint are prepared in U02; request creation logic belongs to a later unit.
+
+## Admin Authentication
+
+Seed a local administrator before testing login:
+
+```bash
+DATABASE_URL=postgresql://yvmohith@localhost:5432/creator_support \
+PASSWORD_HASH_PEPPER=local-development-pepper-value \
+ADMIN_EMAIL=admin@example.com \
+ADMIN_PASSWORD=AdminPass123 \
+ADMIN_FULL_NAME="System Admin" \
+ADMIN_ROLE=admin \
+npm run admin:seed -w apps/api
+```
+
+Admin login is available at:
+
+```text
+http://127.0.0.1:3000/admin/login
+```
+
+Protected admin routes redirect unauthenticated users to the login page. The dashboard screen is intentionally only an authenticated placeholder in U03.
 
 ## Start
 
@@ -89,19 +112,19 @@ Included:
 - Minimal NestJS app shell
 - Environment validation
 - Database connection service configuration
-- Auth module placeholder
+- Admin authentication module
 - File upload storage module placeholder
 - Logging
 - Global error handling
 - Database schema for admin profiles, issue categories, support requests, messages, attachments, and status history
 - Issue category seed data
 - Database-focused schema tests
+- Admin login, logout, session validation, and role authorization for `admin` and `support_agent`
 
 Not included:
 
-- Login
 - Registration
 - Ticket submission
-- Admin dashboard
+- Admin dashboard business UI
 - Product APIs
 - Business logic

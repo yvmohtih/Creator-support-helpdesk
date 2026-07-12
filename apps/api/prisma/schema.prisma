@@ -54,6 +54,7 @@ model AdminProfile {
   id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   authUserId           String                 @unique @map("auth_user_id") @db.VarChar(255)
   fullName             String                 @map("full_name") @db.VarChar(160)
+  passwordHash         String                 @map("password_hash") @db.Text
   role                 AdminRole              @default(support_agent)
   isActive             Boolean                @default(true) @map("is_active")
   createdAt            DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)

@@ -12,13 +12,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const request = context.getRequest<Request>();
     const isHttpException = exception instanceof HttpException;
     const status = isHttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
-    const message = isHttpException ? exception.message : 'Something went wrong.';
+    const message = isHttpException ? this.getHttpErrorMessage(exception) : 'Something went wrong.';
 
     const logPayload = {
       path: request.url,
       method: request.method,
       status,
-      err: exception,
+      err: this.toLogError(exception),
     };
 
     if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
@@ -34,5 +34,35 @@ export class AllExceptionsFilter implements ExceptionFilter {
         message,
       },
     });
+  }
+
+  private toLogError(exception: unknown) {
+    if (exception instanceof Error) {
+      return {
+        name: exception.name,
+        message: exception.message,
+        stack: exception.stack,
+      };
+    }
+
+    return exception;
+  }
+
+  private getHttpErrorMessage(exception: HttpException) {
+    const response = exception.getResponse();
+
+    if (typeof response === 'object' && response !== null && 'message' in response) {
+      const message = (response as { message?: unknown }).message;
+
+      if (Array.isArray(message)) {
+        return message.join(' ');
+      }
+
+      if (typeof message === 'string') {
+        return message;
+      }
+    }
+
+    return exception.message;
   }
 }

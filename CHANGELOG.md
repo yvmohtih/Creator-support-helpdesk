@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-07-13
+
+### U03: Admin Authentication and Authorization
+
+- Added secure admin login and logout endpoints using Argon2 password verification and JWT session cookies.
+- Added protected admin route guards and role authorization for `admin` and `support_agent`.
+- Added admin login, authenticated placeholder, unauthorized, and loading-state UI screens.
+- Added admin seed command for local administrator setup.
+- Added `password_hash` to `admin_profiles` through migration `20260713010000_u03_admin_auth`.
+- Added auth-focused API tests covering valid login, invalid email/password, protected routes, support-agent access, and logout.
+- Updated environment examples, architecture notes, README, and status tracking for U03.
+
 ## 2026-07-12
 
 ### U02: Database Schema and Migrations

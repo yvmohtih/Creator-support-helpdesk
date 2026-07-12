@@ -29,3 +29,90 @@ textarea,
 select {
   font: inherit;
 }
+
+a {
+  color: inherit;
+}
+
+.auth-page {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 16px;
+}
+
+.auth-panel {
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 24px;
+}
+
+.auth-panel h1 {
+  margin: 0 0 12px;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.muted {
+  color: #4b5563;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.auth-form {
+  display: grid;
+  gap: 16px;
+}
+
+.auth-form label {
+  display: grid;
+  gap: 8px;
+  color: #374151;
+  font-weight: 700;
+}
+
+.auth-form input {
+  min-height: 48px;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--foreground);
+}
+
+button,
+.button-link {
+  display: inline-grid;
+  min-height: 48px;
+  place-items: center;
+  border: 0;
+  border-radius: 8px;
+  background: var(--primary);
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 700;
+  padding: 0 18px;
+  text-decoration: none;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.form-error {
+  margin: 0;
+  border-left: 4px solid #dc2626;
+  background: #fef2f2;
+  color: #991b1b;
+  padding: 10px 12px;
+}

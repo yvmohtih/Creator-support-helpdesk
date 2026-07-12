@@ -1,5 +1,5 @@
 import { S3Client } from '@aws-sdk/client-s3';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -7,7 +7,7 @@ export class StorageService {
   readonly bucket: string;
   readonly client: S3Client;
 
-  constructor(config: ConfigService) {
+  constructor(@Inject(ConfigService) config: ConfigService) {
     this.bucket = config.getOrThrow<string>('S3_BUCKET');
     this.client = new S3Client({
       region: config.getOrThrow<string>('S3_REGION'),

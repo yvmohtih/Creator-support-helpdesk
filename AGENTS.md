@@ -10,7 +10,7 @@
 
 ## Current Unit Boundary
 
-U02 creates only the database schema, migrations, seed data, and database-focused tests. It must not implement login, registration, ticket submission, admin dashboard, product APIs, file upload APIs, or business logic.
+U03 implements administrator authentication and authorization only. It must not implement public user registration, ticket submission, admin dashboard business UI, support request workflows, internal-note workflows, status update workflows, file upload APIs, or other future-unit business logic.
 
 ## Development Commands
 
@@ -23,6 +23,7 @@ npm run test
 npm run dev
 npm run prisma:migrate:dev -w apps/api
 npm run prisma:seed -w apps/api
+npm run admin:seed -w apps/api
 ```
 
 ## Architecture Notes

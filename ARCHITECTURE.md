@@ -5,14 +5,25 @@
 - Frontend: Next.js, React, TypeScript
 - Backend: NestJS, TypeScript
 - Database: PostgreSQL with Prisma
-- Authentication foundation: Nest JWT and Passport dependencies
+- Authentication: Nest JWT with HTTP-only admin session cookies
 - File storage foundation: S3-compatible storage client
 - Logging: Pino
 - Testing: Vitest
 
 ## Current Scope
 
-U02 adds the database schema only. It does not add authentication flows, ticket submission, admin dashboards, or business APIs.
+U03 adds administrator authentication and authorization only. It does not add public user login, ticket submission, admin dashboard business UI, support request workflows, internal-note workflows, status update workflows, or product APIs.
+
+## Authentication Overview
+
+Administrator sessions use a signed JWT stored in an HTTP-only `admin_session` cookie. The API validates the cookie on protected admin routes, reloads the active admin profile from PostgreSQL, and checks role metadata before allowing access.
+
+Supported admin roles:
+
+- `admin`
+- `support_agent`
+
+Both roles can access protected admin routes prepared in U03. Passwords are stored only as Argon2 hashes in `admin_profiles.password_hash`, with `PASSWORD_HASH_PEPPER` applied before verification. Login attempts are rate-limited in memory as a practical MVP safeguard.
 
 ## Database Overview
 
@@ -25,7 +36,7 @@ The MVP database has six application tables:
 - `request_attachments`
 - `request_status_history`
 
-Authentication user identity is represented by `admin_profiles.auth_user_id`, which is intended to reference the external/auth-provider user ID. No duplicate password table is introduced.
+Authentication user identity is represented by `admin_profiles.auth_user_id`. U03 stores the admin password hash on the same profile table so the MVP can authenticate administrators without adding public user accounts.
 
 ## Relationships
 

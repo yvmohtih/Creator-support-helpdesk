@@ -2,7 +2,7 @@
 
 ## Current Unit
 
-U02: Database Schema and Migrations
+U03: Admin Authentication and Authorization
 
 ## Status
 
@@ -34,15 +34,29 @@ July 13, 2026
 - Issue category seed script
 - Database-focused schema tests
 - Database schema documentation
+- Admin password hash migration
+- Admin seed script
+- Admin login endpoint
+- Admin logout endpoint
+- Admin session validation endpoint
+- Protected admin API route foundation
+- Role-based authorization for `admin` and `support_agent`
+- Mobile-friendly admin login page
+- Authenticated admin placeholder page
+- Unauthorized page
+- Auth loading state
 
 ## What Does Not Exist Yet
 
-- Login
 - Registration
 - Ticket submission
-- Dashboard
+- Dashboard business UI
 - Product APIs
 - Business logic
+- Public user authentication
+- Support request workflows
+- Internal note workflows
+- Status update workflows
 
 ## Verification
 
@@ -64,10 +78,23 @@ Completed successfully:
 - `prisma migrate reset --force --skip-generate --skip-seed` reset and reapplied U02 migration successfully
 - `prisma:seed` inserted issue categories successfully
 - Live PostgreSQL verification confirmed 6 MVP tables, 18 issue categories, and 9 foreign keys
+- `prisma migrate status` confirmed the U03 database schema is up to date
+- `admin:seed` created/updated local administrator `admin@example.com`
+- Production app startup succeeded at `http://127.0.0.1:3000` and `http://127.0.0.1:4000`
+- Admin login page returned `200 OK`
+- Unauthenticated `/admin` redirected to `/admin/login?next=%2Fadmin`
+- Valid admin login returned `201 Created` and set an HTTP-only `admin_session` cookie
+- Invalid email returned `400 Bad Request`
+- Invalid password returned `401 Unauthorized`
+- Authenticated `/api/v1/admin/auth/me` returned the admin profile
+- Authenticated protected admin ping returned `200 OK`
+- Invalid session token returned `401 Unauthorized`
+- Logout cleared the session cookie
+- Post-logout `/api/v1/admin/auth/me` returned `401 Unauthorized`
 
 ## Notes
 
-U02 is WORKING. Live PostgreSQL migration, reset/reapply, seed, constraints, tests, build, and startup verification pass.
+U03 is WORKING. Admin login, logout, protected routes, role authorization, tests, build, database migration status, and production startup verification pass.
 
 Implemented U02 work:
 
@@ -75,5 +102,14 @@ Implemented U02 work:
 - Seed data for Instagram, Facebook, YouTube, and Other categories.
 - Request number database format guard: `RB-YYYY-XXXXXX`.
 - Database-level constraints for required values, allowed enums, foreign keys, category/platform consistency, internal-note safety, file size, and status-history changes.
+
+Implemented U03 work:
+
+- Admin JWT session cookie with HTTP-only, SameSite Lax settings.
+- Argon2 admin password hash storage and verification.
+- In-memory login attempt rate limiting.
+- Admin guards for session validation and role checks.
+- Protected admin route foundation for later dashboard/support-request units.
+- Mobile-friendly admin login UI and unauthorized page.
 
 Do not run production build commands while development watchers are active; Next.js and NestJS both write generated output during those workflows.

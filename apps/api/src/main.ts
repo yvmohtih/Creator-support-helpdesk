@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import cookieParser from 'cookie-parser';
 import { AppModule } from './modules/app.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { LoggerService } from './common/logging/logger.service';
@@ -12,6 +13,7 @@ async function bootstrap() {
   const webOrigin = config.getOrThrow<string>('WEB_ORIGIN');
 
   app.useLogger(logger);
+  app.use(cookieParser());
   app.setGlobalPrefix('api/v1');
   app.enableCors({
     origin: webOrigin,
