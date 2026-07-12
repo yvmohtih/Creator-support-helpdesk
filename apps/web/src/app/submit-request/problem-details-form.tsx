@@ -128,6 +128,7 @@ export function ProblemDetailsForm({
     const storedDetails = {
       ...result.data,
       category: category.slug,
+      idempotencyKey: existingIdempotencyKey() ?? createIdempotencyKey(),
     };
     setErrors({});
     writeStoredDetails(problemDetailsDraftKey, storedDetails);
@@ -148,6 +149,16 @@ export function ProblemDetailsForm({
     if (firstInvalidField) {
       fieldRefs.current[firstInvalidField]?.focus();
     }
+  }
+
+  function existingIdempotencyKey() {
+    const draft = readStoredDetails(problemDetailsDraftKey);
+
+    if (draft?.platform === platform.slug && draft.category === category.slug) {
+      return draft.idempotencyKey;
+    }
+
+    return undefined;
   }
 
   function errorText(field: keyof FormState) {
@@ -352,6 +363,14 @@ export function ProblemDetailsForm({
       </div>
     </form>
   );
+}
+
+function createIdempotencyKey() {
+  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
+    return crypto.randomUUID();
+  }
+
+  return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
 function FieldError({ id, message }: { id: string; message?: string }) {

@@ -20,3 +20,43 @@ export async function fetchCurrentAdmin() {
 
   return payload.data.admin;
 }
+
+export interface SubmitSupportRequestPayload {
+  category: string;
+  consent: boolean;
+  description: string;
+  email?: string;
+  idempotencyKey: string;
+  mobile: string;
+  name: string;
+  platform: string;
+  platformHandle: string;
+  preferredLanguage: 'en' | 'te';
+}
+
+export interface SubmitSupportRequestResult {
+  categoryName: string;
+  maskedMobile: string;
+  platform: string;
+  requestNumber: string;
+  submittedAt: string;
+}
+
+export async function submitSupportRequest(payload: SubmitSupportRequestPayload) {
+  const response = await fetch(`${API_BASE_URL}/public/support-requests`, {
+    body: JSON.stringify(payload),
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+  });
+
+  if (!response.ok) {
+    throw new Error('SUBMIT_FAILED');
+  }
+
+  const body = (await response.json()) as { data: SubmitSupportRequestResult };
+
+  return body.data;
+}

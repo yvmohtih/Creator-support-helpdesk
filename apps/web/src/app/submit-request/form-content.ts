@@ -2,6 +2,7 @@ import { Language } from '../public-help-content';
 
 export const submitText = {
   summaryTitle: { en: 'Selected problem', te: 'ఎంచుకున్న సమస్య' },
+  platform: { en: 'Platform', te: 'ప్లాట్‌ఫాం' },
   editProblem: { en: 'Edit problem', te: 'సమస్య మార్చండి' },
   formTitle: { en: 'Tell us the details', te: 'వివరాలు చెప్పండి' },
   name: { en: 'Your name', te: 'మీ పేరు' },
@@ -33,6 +34,35 @@ export const submitText = {
   },
   editDetails: { en: 'Edit Details', te: 'వివరాలు మార్చండి' },
   continueNext: { en: 'Continue', te: 'కొనసాగించండి' },
+  submitRequest: { en: 'Submit Request', te: 'అభ్యర్థన పంపండి' },
+  submittingRequest: { en: 'Submitting...', te: 'పంపుతున్నాం...' },
+  submitError: {
+    en: 'We could not submit your request. Please try again.',
+    te: 'మీ అభ్యర్థన పంపలేకపోయాం. దయచేసి మళ్లీ ప్రయత్నించండి.',
+  },
+  submittedTitle: { en: 'Request submitted', te: 'అభ్యర్థన పంపబడింది' },
+  submittedMessage: {
+    en: 'Please keep this request number. You can use it to track your help request.',
+    te: 'దయచేసి ఈ రిక్వెస్ట్ నంబర్ ఉంచుకోండి. మీ సహాయ అభ్యర్థనను చూడటానికి ఇది ఉపయోగపడుతుంది.',
+  },
+  requestNumber: { en: 'Request number', te: 'రిక్వెస్ట్ నంబర్' },
+  submittedOn: { en: 'Submitted on', te: 'పంపిన తేదీ' },
+  copyRequestNumber: { en: 'Copy Request Number', te: 'రిక్వెస్ట్ నంబర్ కాపీ చేయండి' },
+  copiedRequestNumber: { en: 'Request number copied.', te: 'రిక్వెస్ట్ నంబర్ కాపీ అయింది.' },
+  copyUnavailable: {
+    en: 'Copy is not available. Please write down the request number.',
+    te: 'కాపీ అందుబాటులో లేదు. దయచేసి రిక్వెస్ట్ నంబర్ రాసుకోండి.',
+  },
+  trackRequest: { en: 'Track Request', te: 'రిక్వెస్ట్ చూడండి' },
+  submitAnother: { en: 'Submit Another Problem', te: 'మరో సమస్య పంపండి' },
+  confirmationMissingTitle: {
+    en: 'Request details not found',
+    te: 'రిక్వెస్ట్ వివరాలు కనిపించలేదు',
+  },
+  confirmationMissingMessage: {
+    en: 'If you already submitted, please check the request number you saved.',
+    te: 'మీరు ఇప్పటికే పంపితే, మీరు ఉంచుకున్న రిక్వెస్ట్ నంబర్ చూడండి.',
+  },
   finalPlaceholderTitle: { en: 'Next step', te: 'తర్వాత దశ' },
   finalPlaceholderMessage: {
     en: 'Request submission will be completed in the next step.',

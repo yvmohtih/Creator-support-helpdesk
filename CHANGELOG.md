@@ -2,6 +2,19 @@
 
 ## 2026-07-13
 
+### U07: Save Request, Generate Request Number, and Confirmation
+
+- Added public support request submission API with server-side validation.
+- Added server-side request number generation in the readable `RB-YYYY-XXXXXX` format.
+- Added transactional support request creation with initial `received` status history.
+- Added idempotent submission handling to avoid duplicate rows on repeated Continue clicks.
+- Added lightweight public submit rate limiting.
+- Added `/request-submitted` confirmation screen with request number, masked mobile, submitted date, copy action, track placeholder link, home, and submit-another actions.
+- Added a non-tracking `/track-request` placeholder so the confirmation action does not 404.
+- Updated preview Continue to save the request instead of opening the U06 placeholder.
+- Synced issue category seed data with all public U05 category cards.
+- Added tests for valid save, default status/priority, status history, request number format, duplicate submit, collision retry, invalid category, inactive category, invalid mobile, optional email, Telugu text, and transaction failure.
+
 ### U06: Submit Problem Details Form
 
 - Added the `/submit-request` details form with mobile-first fields for name, platform username/channel/page, mobile, email, description, preferred language, and consent.

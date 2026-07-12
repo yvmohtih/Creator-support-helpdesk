@@ -529,6 +529,31 @@ a.platform-option {
   gap: 10px;
 }
 
+.submitted-panel {
+  gap: 16px;
+}
+
+.request-number-box {
+  display: grid;
+  gap: 8px;
+  border: 2px solid var(--primary);
+  border-radius: 8px;
+  background: var(--soft-blue);
+  color: var(--primary-strong);
+  padding: 16px;
+}
+
+.request-number-box span {
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.request-number-box strong {
+  overflow-wrap: anywhere;
+  font-size: 30px;
+  line-height: 1.1;
+}
+
 .secondary-action {
   border: 2px solid var(--primary);
   background: var(--surface);

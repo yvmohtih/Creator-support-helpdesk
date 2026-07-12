@@ -1,6 +1,43 @@
 export type PreferredLanguage = 'en' | 'te';
 export type SupportPlatform = 'instagram' | 'facebook' | 'youtube' | 'other';
 
+export const requestCategoryNameBySlug: Record<SupportPlatform, Record<string, string>> = {
+  instagram: {
+    'account-disabled': 'Account disabled',
+    'cannot-log-in': 'Cannot log in',
+    'copyright-issue': 'Copyright issue',
+    'reach-reduced': 'Reach reduced',
+    'monetization-problem': 'Monetization problem',
+    'payment-not-received': 'Payment not received',
+    'other-problem': 'Other problem',
+  },
+  facebook: {
+    'page-disabled': 'Page disabled',
+    'cannot-log-in': 'Cannot log in',
+    'monetization-problem': 'Monetization problem',
+    'payment-not-received': 'Payment not received',
+    'copyright-issue': 'Copyright issue',
+    'page-access-problem': 'Page access problem',
+    'other-problem': 'Other problem',
+  },
+  youtube: {
+    'channel-warning': 'Channel warning',
+    'copyright-strike': 'Copyright strike',
+    'channel-suspended': 'Channel suspended',
+    'monetization-issue': 'Monetization issue',
+    'adsense-issue': 'AdSense issue',
+    'payment-issue': 'Payment issue',
+    'other-problem': 'Other problem',
+  },
+  other: {
+    'account-problem': 'Account problem',
+    'login-problem': 'Login problem',
+    'payment-problem': 'Payment problem',
+    'copyright-problem': 'Copyright problem',
+    'other-problem': 'Other problem',
+  },
+};
+
 export interface ProblemDetailsInput {
   name: string;
   platformHandle: string;
@@ -141,6 +178,10 @@ export function maskEmail(value: string) {
   const visibleEnd = localPart.length > 4 ? localPart.slice(-1) : '';
 
   return `${visibleStart}${'•'.repeat(Math.max(3, localPart.length - visibleStart.length - visibleEnd.length))}${visibleEnd}@${domain}`;
+}
+
+export function getRequestCategoryName(platform: SupportPlatform, categorySlug: string) {
+  return requestCategoryNameBySlug[platform]?.[categorySlug];
 }
 
 function collapseSpaces(value: string) {

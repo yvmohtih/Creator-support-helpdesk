@@ -4,6 +4,7 @@ import {
   maskMobileNumber,
   normalizeIndianMobile,
   PROJECT_NAME,
+  getRequestCategoryName,
   validateProblemDetails,
 } from './index';
 
@@ -97,6 +98,13 @@ describe('problem details validation', () => {
     expect(
       validateProblemDetails({ ...validInput, platform: 'other', platformHandle: '' }).isValid,
     ).toBe(true);
+  });
+
+  it('maps public category slugs to persisted category names', () => {
+    expect(getRequestCategoryName('instagram', 'account-disabled')).toBe('Account disabled');
+    expect(getRequestCategoryName('facebook', 'page-access-problem')).toBe('Page access problem');
+    expect(getRequestCategoryName('youtube', 'other-problem')).toBe('Other problem');
+    expect(getRequestCategoryName('other', 'missing')).toBeUndefined();
   });
 
   it('masks mobile number and email for preview', () => {

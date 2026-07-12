@@ -10,7 +10,7 @@
 
 ## Current Unit Boundary
 
-U06 implements only the public problem details form, client-side validation, preview, and non-submitting continue placeholder. It must not implement database request creation, request-number generation, screenshot storage, request tracking pages, admin dashboard business UI, notifications, support request workflows, internal-note workflows, status update workflows, file upload APIs, or other future-unit business logic.
+U07 implements only public request saving after preview, request-number generation, duplicate-submit protection, initial status history creation, and the request-submitted confirmation page. It must not implement screenshot storage, request tracking lookup, admin dashboard business UI, notifications, admin replies, internal-note workflows, status update workflows, file upload APIs, or other future-unit business logic.
 
 ## Development Commands
 

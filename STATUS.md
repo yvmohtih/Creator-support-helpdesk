@@ -2,7 +2,7 @@
 
 ## Current Unit
 
-U06: Submit Problem Details Form
+U07: Save Request, Generate Request Number, and Confirmation
 
 ## Status
 
@@ -61,15 +61,19 @@ July 13, 2026
 - Temporary session-state preview flow
 - Masked mobile number and masked email preview
 - Edit Details restore behavior
-- Non-submitting `/submit-request/complete` placeholder
+- Public support request save API
+- Server-side request validation before database write
+- Request-number generation using readable `RB-YYYY-XXXXXX` format
+- Idempotent public request submission using a browser-generated key
+- Initial `received` status history creation in the same transaction as request creation
+- Public `/request-submitted` confirmation page with copy action
+- Non-tracking `/track-request` placeholder linked from confirmation
+- Submit attempt rate limiting foundation
 
 ## What Does Not Exist Yet
 
 - Registration
 - Screenshot upload
-- Ticket submission
-- Database request creation
-- Request-number generation
 - Request tracking page
 - Notifications
 - Dashboard business UI
@@ -138,10 +142,22 @@ Completed successfully:
 - Continue action opened `/submit-request/complete` placeholder without submitting a request
 - Invalid platform and invalid category URLs showed simple fallback screens
 - Mobile, tablet, and desktop viewport checks confirmed no horizontal overflow and 56px submit button height
+- Public request save API returned a generated request number after valid details
+- Database write created one `support_requests` row and one initial `request_status_history` row
+- Reusing the same idempotency key returned the same request number without creating a second row
+- Invalid category and invalid mobile submissions were rejected before writing
+- Confirmation page displayed request number, selected platform/category, masked mobile, submitted date, and action buttons
+- Confirmation URL did not contain name, mobile, email, description, or request number
+- Copy Request Number copied the generated request number to the browser clipboard and showed a success message
+- Track Request opened a simple placeholder instead of a 404
 
 ## Notes
 
-U06 is WORKING. Problem details form, validation, language switching, preview masking, edit restore, non-submitting placeholder, tests, build, startup, and visual verification pass.
+U07 is WORKING. Request saving, server validation, request-number generation, idempotent submit handling, initial status history, confirmation page, tests, build, startup, and manual verification pass.
+
+Known U07 limitation:
+
+- Public submit idempotency and rate limiting are in-memory MVP safeguards. They prevent repeat clicks in the running process, but they reset on server restart.
 
 Implemented U02 work:
 
@@ -180,5 +196,16 @@ Implemented U06 work:
 - Temporary session-state preview without sensitive URL parameters.
 - Masked mobile/email preview and Edit Details restore.
 - Continue placeholder only; no database write, screenshot upload, request number, tracking, or notifications.
+
+Implemented U07 work:
+
+- Public support request API for saving validated form data.
+- Safe category slug mapping from public UI choices to persisted issue categories.
+- Request numbers generated server-side in the `RB-YYYY-XXXXXX` format with ambiguous suffix characters avoided.
+- Transactional support request creation plus initial `received` status history.
+- Idempotency key support to prevent duplicate rows on repeat submit.
+- Confirmation page that shows only safe details and clears temporary form/preview state after success.
+- Track Request placeholder only; no request lookup is implemented yet.
+- Seed data aligned with all public category cards.
 
 Do not run production build commands while development watchers are active; Next.js and NestJS both write generated output during those workflows.

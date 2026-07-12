@@ -4,6 +4,8 @@ export {
   maskEmail,
   maskMobileNumber,
   normalizeIndianMobile,
+  getRequestCategoryName,
+  requestCategoryNameBySlug,
   validateProblemDetails,
 } from './problem-details';
 export type {

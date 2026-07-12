@@ -200,7 +200,7 @@ RB-YYYY-XXXXXX
 Example:
 
 ```text
-RB-2026-AB12CD
+RB-2026-AB2CDE
 ```
 
 Rules:
@@ -209,7 +209,17 @@ Rules:
 - Must be easy to read and share.
 - Must not rely only on sequential database IDs.
 - The database validates the format.
-- Generation logic will be implemented in a later support request unit.
+- Generation happens in the API service before inserting `support_requests`.
+- The generated suffix avoids confusing characters such as `O`, `0`, `I`, and `1` where practical.
+
+## Public Request Creation
+
+U07 creates:
+
+- One `support_requests` row with status `received` and priority `normal`.
+- One `request_status_history` row with `old_status = null` and `new_status = received`.
+
+Both rows are created in a single database transaction. If status history creation fails, the support request insert is rolled back by the transaction.
 
 ## Commands
 

@@ -2,10 +2,19 @@
 
 import { maskEmail, maskMobileNumber } from '@creator-support/shared';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { submitSupportRequest } from '../../../lib/api';
 import { commonText, getCategory, getPlatform, Language } from '../../public-help-content';
 import { submitText } from '../form-content';
-import { problemDetailsPreviewKey, readStoredDetails, StoredProblemDetails } from '../storage';
+import {
+  problemDetailsDraftKey,
+  problemDetailsPreviewKey,
+  readStoredDetails,
+  removeStoredDetails,
+  StoredProblemDetails,
+  writeStoredConfirmation,
+} from '../storage';
 
 interface PreviewClientProps {
   categorySlug?: string;
@@ -14,7 +23,10 @@ interface PreviewClientProps {
 }
 
 export function PreviewClient({ categorySlug, language, platformSlug }: PreviewClientProps) {
+  const router = useRouter();
   const [details, setDetails] = useState<StoredProblemDetails>();
+  const [submitError, setSubmitError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     setDetails(readStoredDetails(problemDetailsPreviewKey));
@@ -68,6 +80,48 @@ export function PreviewClient({ categorySlug, language, platformSlug }: PreviewC
     lang: language,
   });
 
+  async function submitRequest() {
+    if (isSubmitting) {
+      return;
+    }
+
+    const currentDetails = details;
+
+    if (!currentDetails) {
+      setSubmitError(submitText.noPreviewMessage[language]);
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError('');
+
+    try {
+      const result = await submitSupportRequest({
+        category: currentDetails.category,
+        consent: true,
+        description: currentDetails.description,
+        email: currentDetails.email || undefined,
+        idempotencyKey: currentDetails.idempotencyKey,
+        mobile: currentDetails.mobile,
+        name: currentDetails.name,
+        platform: currentDetails.platform,
+        platformHandle: currentDetails.platformHandle,
+        preferredLanguage: currentDetails.preferredLanguage,
+      });
+
+      writeStoredConfirmation({
+        ...result,
+        language,
+      });
+      removeStoredDetails(problemDetailsDraftKey);
+      removeStoredDetails(problemDetailsPreviewKey);
+      router.push(`/request-submitted?lang=${language}`);
+    } catch {
+      setSubmitError(submitText.submitError[language]);
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <main className="public-home">
       <section className="help-shell" aria-labelledby="preview-title">
@@ -106,13 +160,17 @@ export function PreviewClient({ categorySlug, language, platformSlug }: PreviewC
             >
               {submitText.editDetails[language]}
             </Link>
-            <Link
-              className="button-link"
-              href={`/submit-request/complete?platform=${platform.slug}&category=${category.slug}&lang=${language}`}
-            >
-              {submitText.continueNext[language]}
-            </Link>
+            <button disabled={isSubmitting} onClick={submitRequest} type="button">
+              {isSubmitting
+                ? submitText.submittingRequest[language]
+                : submitText.submitRequest[language]}
+            </button>
           </div>
+          {submitError ? (
+            <p className="field-error" role="alert">
+              {submitError}
+            </p>
+          ) : null}
         </div>
       </section>
     </main>

@@ -12,7 +12,7 @@
 
 ## Current Scope
 
-U06 adds the public problem details form, validation, preview, and non-submitting continue placeholder only. It does not add database request creation, request-number generation, screenshot storage, request tracking pages, admin dashboard business UI, notifications, support request workflows, internal-note workflows, status update workflows, or product APIs.
+U07 saves a public support request after the preview screen, generates a readable request number, creates initial status history, and shows a confirmation page. It does not add screenshot storage, request tracking lookup, admin dashboard business UI, notifications, admin replies, internal-note workflows, status update workflows, or file upload APIs.
 
 ## Public Homepage Overview
 
@@ -24,7 +24,13 @@ The `/get-help` route validates the `platform` query parameter for `instagram`, 
 
 ## Problem Details Form Overview
 
-The `/submit-request` route validates platform and category query parameters, then renders a client-side form for user details. Validation logic lives in `packages/shared` so it can be reused by later server-side request creation. Preview data is stored temporarily in `sessionStorage` and sensitive fields are not placed in URLs. The preview masks mobile numbers and email addresses. U06 performs no API call and no database write.
+The `/submit-request` route validates platform and category query parameters, then renders a client-side form for user details. Validation logic lives in `packages/shared` and is reused by the server before saving. Preview data is stored temporarily in `sessionStorage` and sensitive fields are not placed in URLs. The preview masks mobile numbers and email addresses.
+
+## Public Request Submission Overview
+
+The preview Submit Request action calls `POST /api/v1/public/support-requests` with the selected platform, category slug, problem details, consent, and a browser-generated idempotency key. The API validates the input, maps the category slug to the persisted category name, confirms the category is active, generates a request number, and creates the support request plus initial status history inside one database transaction.
+
+On success, the frontend clears temporary form and preview state and stores only safe confirmation details in `sessionStorage`: request number, platform, category, masked mobile, and submitted date. The confirmation URL does not include user contact details, description, or request number.
 
 ## Authentication Overview
 
@@ -72,7 +78,7 @@ RB-YYYY-XXXXXX
 Example:
 
 ```text
-RB-2026-AB12CD
+RB-2026-AB2CDE
 ```
 
-The database enforces the format and uniqueness. Generation logic belongs to the future request creation unit.
+The database enforces the format and uniqueness. The API generates request numbers with an ambiguous-character-safe suffix and retries when a unique collision occurs.

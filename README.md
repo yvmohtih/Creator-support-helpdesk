@@ -4,7 +4,7 @@ Mobile-first social media technical support platform for rural users, small crea
 
 ## Current Status
 
-Unit U06 problem details form and preview is implemented and verified. Database request creation, request-number generation, screenshot upload/storage, request tracking, dashboards, product APIs, and notifications are intentionally not implemented yet.
+Unit U07 request saving, request-number generation, and confirmation is implemented and verified. Screenshot upload/storage, request tracking, dashboards, admin reply workflows, and notifications are intentionally not implemented yet.
 
 ## Stack
 
@@ -48,7 +48,7 @@ U02 migration:
 apps/api/prisma/migrations/20260712182000_u02_database_schema/migration.sql
 ```
 
-Request numbers should be generated later in application logic using this format:
+Request numbers are generated in application logic using this format:
 
 ```text
 RB-YYYY-XXXXXX
@@ -57,10 +57,10 @@ RB-YYYY-XXXXXX
 Example:
 
 ```text
-RB-2026-AB12CD
+RB-2026-AB2CDE
 ```
 
-The field and database check constraint are prepared in U02; request creation logic belongs to a later unit.
+The suffix avoids confusing characters such as `O`, `0`, `I`, and `1` where practical, while the database validates the broad readable format.
 
 ## Admin Authentication
 
@@ -110,7 +110,7 @@ Selecting a category routes to:
 /submit-request?platform=instagram&category=account-disabled&lang=en
 ```
 
-In U06 this route collects and validates details, then navigates to `/submit-request/preview` using temporary browser session state. It does not create a support request.
+This route collects and validates details, then navigates to `/submit-request/preview` using temporary browser session state.
 
 Preview route:
 
@@ -118,7 +118,15 @@ Preview route:
 /submit-request/preview?platform=instagram&category=account-disabled&lang=en
 ```
 
-The preview masks mobile number and email. The Continue action goes to a placeholder page stating that request submission will be completed in the next step.
+The preview masks mobile number and email. The Submit Request action saves the support request through the public API, clears temporary form state after success, and opens:
+
+```text
+/request-submitted?lang=en
+```
+
+The confirmation page displays the generated request number, platform/category, masked mobile number, and submitted date. Sensitive user details are not placed in the URL.
+
+The Track Request action opens a placeholder at `/track-request`; request lookup is not implemented yet.
 
 ## Start
 
@@ -159,14 +167,13 @@ Included:
 - Public homepage with mobile-first platform selection
 - Public problem category selection and submit-request placeholder
 - Public problem details form, validation, masked preview, and edit restore
+- Public request submission API with request-number generation and confirmation page
 
 Not included:
 
 - Registration
 - Screenshot upload
-- Ticket submission and database request creation
-- Request-number generation
 - Request tracking
 - Admin dashboard business UI
-- Product APIs
-- Business logic
+- Admin reply workflows
+- Notifications
