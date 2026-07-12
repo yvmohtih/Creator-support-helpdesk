@@ -2,7 +2,7 @@
 
 ## Current Unit
 
-U01: Project Foundation
+U02: Database Schema and Migrations
 
 ## Status
 
@@ -10,7 +10,7 @@ WORKING
 
 ## Last Verified
 
-July 12, 2026
+July 13, 2026
 
 ## What Exists
 
@@ -29,6 +29,11 @@ July 12, 2026
 - Pino logging foundation
 - Global error handling foundation
 - README and AGENTS documentation
+- Prisma schema with U02 database entities
+- SQL migration for the MVP database schema
+- Issue category seed script
+- Database-focused schema tests
+- Database schema documentation
 
 ## What Does Not Exist Yet
 
@@ -37,7 +42,6 @@ July 12, 2026
 - Ticket submission
 - Dashboard
 - Product APIs
-- Database tables
 - Business logic
 
 ## Verification
@@ -54,14 +58,22 @@ Completed successfully:
 - `npm run dev`
 - Frontend HTTP check: `http://127.0.0.1:3000` returned `200 OK`
 - Backend health check: `http://127.0.0.1:4000/api/v1/health` returned `{"success":true,"data":{"status":"ok","service":"creator-support-api"}}`
+- Database schema tests using in-memory PostgreSQL-compatible verification passed
+- PostgreSQL runtime installed/reached locally
+- `prisma migrate dev` applied U02 migration successfully
+- `prisma migrate reset --force --skip-generate --skip-seed` reset and reapplied U02 migration successfully
+- `prisma:seed` inserted issue categories successfully
+- Live PostgreSQL verification confirmed 6 MVP tables, 18 issue categories, and 9 foreign keys
 
 ## Notes
 
-U01 is WORKING. Startup verification used local placeholder environment values and `SKIP_DATABASE_CONNECT=true` because U01 configures database connectivity but does not require a live database or create tables.
+U02 is WORKING. Live PostgreSQL migration, reset/reapply, seed, constraints, tests, build, and startup verification pass.
 
-During verification, two U01 foundation fixes were made:
+Implemented U02 work:
 
-- Backend environment loading now explicitly checks the monorepo root `.env` when launched from the API workspace.
-- The global exception filter now logs 4xx client errors as warnings and 5xx server errors as errors.
+- Six-table MVP schema: admin profiles, issue categories, support requests, request messages, request attachments, request status history.
+- Seed data for Instagram, Facebook, YouTube, and Other categories.
+- Request number database format guard: `RB-YYYY-XXXXXX`.
+- Database-level constraints for required values, allowed enums, foreign keys, category/platform consistency, internal-note safety, file size, and status-history changes.
 
 Do not run production build commands while development watchers are active; Next.js and NestJS both write generated output during those workflows.

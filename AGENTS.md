@@ -10,7 +10,7 @@
 
 ## Current Unit Boundary
 
-U01 creates only the project foundation. It must not implement login, registration, ticket submission, admin dashboard, product APIs, database tables, or business logic.
+U02 creates only the database schema, migrations, seed data, and database-focused tests. It must not implement login, registration, ticket submission, admin dashboard, product APIs, file upload APIs, or business logic.
 
 ## Development Commands
 
@@ -21,6 +21,8 @@ npm run lint
 npm run typecheck
 npm run test
 npm run dev
+npm run prisma:migrate:dev -w apps/api
+npm run prisma:seed -w apps/api
 ```
 
 ## Architecture Notes

@@ -4,7 +4,7 @@ Mobile-first social media technical support platform for rural users, small crea
 
 ## Current Status
 
-Unit U01 project foundation is implemented. The app contains infrastructure-level startup code only. Login, ticket submission, dashboards, product APIs, database tables, and business logic are intentionally not implemented yet.
+Unit U02 database schema work is implemented but still needs verification against a live PostgreSQL development database. Login, ticket submission, dashboards, product APIs, and business logic are intentionally not implemented yet.
 
 ## Stack
 
@@ -29,6 +29,38 @@ npm run typecheck
 npm run test
 ```
 
+## Database
+
+The API uses Prisma with PostgreSQL.
+
+Useful commands:
+
+```bash
+npm run prisma:generate -w apps/api
+npm run prisma:migrate:dev -w apps/api
+npm run prisma:seed -w apps/api
+```
+
+U02 migration:
+
+```text
+apps/api/prisma/migrations/20260712182000_u02_database_schema/migration.sql
+```
+
+Request numbers should be generated later in application logic using this format:
+
+```text
+RB-YYYY-XXXXXX
+```
+
+Example:
+
+```text
+RB-2026-AB12CD
+```
+
+The field and database check constraint are prepared in U02; request creation logic belongs to a later unit.
+
 ## Start
 
 Development:
@@ -46,7 +78,7 @@ npm run start
 Frontend runs on `http://localhost:3000`.
 Backend runs on `http://localhost:4000`.
 
-## U01 Boundaries
+## Current Boundaries
 
 Included:
 
@@ -61,6 +93,9 @@ Included:
 - File upload storage module placeholder
 - Logging
 - Global error handling
+- Database schema for admin profiles, issue categories, support requests, messages, attachments, and status history
+- Issue category seed data
+- Database-focused schema tests
 
 Not included:
 
@@ -69,5 +104,4 @@ Not included:
 - Ticket submission
 - Admin dashboard
 - Product APIs
-- Database tables
 - Business logic

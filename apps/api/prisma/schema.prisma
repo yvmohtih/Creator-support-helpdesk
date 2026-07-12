@@ -6,3 +6,165 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum AdminRole {
+  admin
+  support_agent
+}
+
+enum Platform {
+  instagram
+  facebook
+  youtube
+  other
+}
+
+enum PreferredLanguage {
+  en
+  te
+}
+
+enum RequestStatus {
+  received
+  checking
+  need_more_details
+  solution_provided
+  completed
+}
+
+enum RequestPriority {
+  low
+  normal
+  high
+  urgent
+}
+
+enum MessageSenderType {
+  user
+  admin
+  system
+}
+
+enum AttachmentUploadedBy {
+  user
+  admin
+}
+
+model AdminProfile {
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  authUserId           String                 @unique @map("auth_user_id") @db.VarChar(255)
+  fullName             String                 @map("full_name") @db.VarChar(160)
+  role                 AdminRole              @default(support_agent)
+  isActive             Boolean                @default(true) @map("is_active")
+  createdAt            DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime               @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  assignedRequests     SupportRequest[]       @relation("AssignedSupportRequests")
+  sentMessages         RequestMessage[]
+  changedStatusHistory RequestStatusHistory[]
+
+  @@index([role], map: "idx_admin_profiles_role")
+  @@index([isActive], map: "idx_admin_profiles_is_active")
+  @@map("admin_profiles")
+}
+
+model IssueCategory {
+  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  platform       Platform
+  nameEn         String           @map("name_en") @db.VarChar(120)
+  nameTe         String           @map("name_te") @db.VarChar(120)
+  descriptionEn  String?          @map("description_en") @db.Text
+  descriptionTe  String?          @map("description_te") @db.Text
+  isActive       Boolean          @default(true) @map("is_active")
+  sortOrder      Int              @default(0) @map("sort_order")
+  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime         @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  supportRequests SupportRequest[]
+
+  @@unique([id, platform], map: "uq_issue_categories_id_platform")
+  @@unique([platform, nameEn], map: "uq_issue_categories_platform_name_en")
+  @@index([platform, isActive, sortOrder], map: "idx_issue_categories_platform_active_sort")
+  @@map("issue_categories")
+}
+
+model SupportRequest {
+  id                String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  requestNumber     String                 @unique @map("request_number") @db.VarChar(32)
+  platform          Platform
+  categoryId        String                 @map("category_id") @db.Uuid
+  userName          String                 @map("user_name") @db.VarChar(160)
+  platformUsername  String?                @map("platform_username") @db.VarChar(255)
+  mobileNumber      String                 @map("mobile_number") @db.VarChar(20)
+  email             String?                @db.VarChar(255)
+  description       String                 @db.Text
+  preferredLanguage PreferredLanguage      @default(te) @map("preferred_language")
+  status            RequestStatus          @default(received)
+  priority          RequestPriority        @default(normal)
+  assignedAdminId   String?                @map("assigned_admin_id") @db.Uuid
+  createdAt         DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime               @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  resolvedAt        DateTime?              @map("resolved_at") @db.Timestamptz(6)
+  category          IssueCategory          @relation(fields: [categoryId, platform], references: [id, platform], onDelete: Restrict, onUpdate: Cascade)
+  assignedAdmin     AdminProfile?          @relation("AssignedSupportRequests", fields: [assignedAdminId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  messages          RequestMessage[]
+  attachments       RequestAttachment[]
+  statusHistory     RequestStatusHistory[]
+
+  @@index([status], map: "idx_support_requests_status")
+  @@index([platform], map: "idx_support_requests_platform")
+  @@index([mobileNumber], map: "idx_support_requests_mobile_number")
+  @@index([createdAt], map: "idx_support_requests_created_at")
+  @@index([categoryId], map: "idx_support_requests_category_id")
+  @@index([assignedAdminId], map: "idx_support_requests_assigned_admin_id")
+  @@map("support_requests")
+}
+
+model RequestMessage {
+  id               String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  supportRequestId String              @map("support_request_id") @db.Uuid
+  senderType       MessageSenderType   @map("sender_type")
+  senderAdminId    String?             @map("sender_admin_id") @db.Uuid
+  message          String              @db.Text
+  isInternalNote   Boolean             @default(false) @map("is_internal_note")
+  createdAt        DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  supportRequest   SupportRequest      @relation(fields: [supportRequestId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  senderAdmin      AdminProfile?       @relation(fields: [senderAdminId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  attachments      RequestAttachment[]
+
+  @@index([supportRequestId, createdAt], map: "idx_request_messages_request_created_at")
+  @@index([senderAdminId], map: "idx_request_messages_sender_admin_id")
+  @@map("request_messages")
+}
+
+model RequestAttachment {
+  id                String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  supportRequestId  String          @map("support_request_id") @db.Uuid
+  requestMessageId  String?         @map("request_message_id") @db.Uuid
+  storagePath       String          @map("storage_path") @db.Text
+  originalFileName  String          @map("original_file_name") @db.VarChar(255)
+  mimeType          String          @map("mime_type") @db.VarChar(120)
+  fileSize          Int             @map("file_size")
+  uploadedBy        AttachmentUploadedBy @map("uploaded_by")
+  createdAt         DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  supportRequest    SupportRequest  @relation(fields: [supportRequestId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  requestMessage    RequestMessage? @relation(fields: [requestMessageId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([supportRequestId], map: "idx_request_attachments_request_id")
+  @@index([requestMessageId], map: "idx_request_attachments_message_id")
+  @@map("request_attachments")
+}
+
+model RequestStatusHistory {
+  id                String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  supportRequestId  String          @map("support_request_id") @db.Uuid
+  oldStatus         RequestStatus?  @map("old_status")
+  newStatus         RequestStatus   @map("new_status")
+  changedByAdminId  String?         @map("changed_by_admin_id") @db.Uuid
+  note              String?         @db.Text
+  createdAt         DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  supportRequest    SupportRequest  @relation(fields: [supportRequestId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  changedByAdmin    AdminProfile?   @relation(fields: [changedByAdminId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([supportRequestId, createdAt], map: "idx_request_status_history_request_created_at")
+  @@index([changedByAdminId], map: "idx_request_status_history_admin_id")
+  @@map("request_status_history")
+}
