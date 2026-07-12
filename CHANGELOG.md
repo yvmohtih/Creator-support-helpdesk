@@ -2,6 +2,16 @@
 
 ## 2026-07-13
 
+### U06: Submit Problem Details Form
+
+- Added the `/submit-request` details form with mobile-first fields for name, platform username/channel/page, mobile, email, description, preferred language, and consent.
+- Added shared validation and normalization helpers for problem details in `packages/shared`.
+- Added English/Telugu labels, helper text, validation errors, loading text, preview copy, and placeholder copy.
+- Added temporary session-state preview flow without sensitive details in URL query parameters.
+- Added masked mobile number and masked email display on `/submit-request/preview`.
+- Added Edit Details restore behavior and a non-submitting `/submit-request/complete` placeholder.
+- Added tests for valid data, required fields, Indian mobile normalization, email validation, description limits, Telugu text, optional Other-platform handle, and masking.
+
 ### U05: Problem Category Selection
 
 - Added `/get-help` with safe platform validation for Instagram, Facebook, YouTube, and Other.

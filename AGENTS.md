@@ -10,7 +10,7 @@
 
 ## Current Unit Boundary
 
-U05 implements only public problem category selection after a platform is chosen. It must not implement the full support request form, screenshot upload, database request creation, request tracking pages, admin dashboard business UI, support request workflows, internal-note workflows, status update workflows, file upload APIs, or other future-unit business logic.
+U06 implements only the public problem details form, client-side validation, preview, and non-submitting continue placeholder. It must not implement database request creation, request-number generation, screenshot storage, request tracking pages, admin dashboard business UI, notifications, support request workflows, internal-note workflows, status update workflows, file upload APIs, or other future-unit business logic.
 
 ## Development Commands
 

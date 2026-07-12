@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { commonText, getCategory, getLanguage, getPlatform } from '../public-help-content';
+import { ProblemDetailsForm } from './problem-details-form';
 
 interface SubmitRequestPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -27,7 +28,6 @@ export default async function SubmitRequestPage({ searchParams }: SubmitRequestP
   }
 
   const category = getCategory(platform.slug, categorySlug);
-  const platformLabel = language === 'te' ? platform.teluguName : platform.name;
 
   if (!category) {
     const paramsBack = new URLSearchParams({ platform: platform.slug, lang: language });
@@ -47,19 +47,12 @@ export default async function SubmitRequestPage({ searchParams }: SubmitRequestP
 
   return (
     <main className="public-home">
-      <section className="help-shell" aria-labelledby="next-step-title">
+      <section className="help-shell" aria-labelledby="submit-request-title">
         <Link className="text-link" href={`/get-help?platform=${platform.slug}&lang=${language}`}>
           {commonText.back[language]}
         </Link>
 
-        <div className="placeholder-panel">
-          <p className="section-kicker">{platformLabel}</p>
-          <h1 id="next-step-title">{commonText.nextStepTitle[language]}</h1>
-          <p className="selected-summary">
-            {category.icon} {category.title[language]}
-          </p>
-          <p className="muted">{commonText.nextStepMessage[language]}</p>
-        </div>
+        <ProblemDetailsForm category={category} initialLanguage={language} platform={platform} />
       </section>
     </main>
   );

@@ -4,7 +4,7 @@ Mobile-first social media technical support platform for rural users, small crea
 
 ## Current Status
 
-Unit U05 problem category selection is implemented and verified. Full request submission, screenshot upload, request tracking, dashboards, product APIs, and database request creation are intentionally not implemented yet.
+Unit U06 problem details form and preview is implemented and verified. Database request creation, request-number generation, screenshot upload/storage, request tracking, dashboards, product APIs, and notifications are intentionally not implemented yet.
 
 ## Stack
 
@@ -110,7 +110,15 @@ Selecting a category routes to:
 /submit-request?platform=instagram&category=account-disabled&lang=en
 ```
 
-In U05 this route is only a placeholder. It shows the selected platform/category and does not create a support request.
+In U06 this route collects and validates details, then navigates to `/submit-request/preview` using temporary browser session state. It does not create a support request.
+
+Preview route:
+
+```text
+/submit-request/preview?platform=instagram&category=account-disabled&lang=en
+```
+
+The preview masks mobile number and email. The Continue action goes to a placeholder page stating that request submission will be completed in the next step.
 
 ## Start
 
@@ -150,13 +158,14 @@ Included:
 - Admin login, logout, session validation, and role authorization for `admin` and `support_agent`
 - Public homepage with mobile-first platform selection
 - Public problem category selection and submit-request placeholder
+- Public problem details form, validation, masked preview, and edit restore
 
 Not included:
 
 - Registration
-- Full support request form
 - Screenshot upload
 - Ticket submission and database request creation
+- Request-number generation
 - Request tracking
 - Admin dashboard business UI
 - Product APIs

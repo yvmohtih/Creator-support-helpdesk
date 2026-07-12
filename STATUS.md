@@ -2,7 +2,7 @@
 
 ## Current Unit
 
-U05: Problem Category Selection
+U06: Submit Problem Details Form
 
 ## Status
 
@@ -55,15 +55,23 @@ July 13, 2026
 - Large touch-friendly category cards
 - `/submit-request` placeholder that shows selected platform and category
 - Invalid platform and missing category fallback screens
+- Public `/submit-request` problem details form
+- Shared problem details validation helpers
+- English and Telugu form labels, helper text, validation errors, loading text, preview text, and placeholder text
+- Temporary session-state preview flow
+- Masked mobile number and masked email preview
+- Edit Details restore behavior
+- Non-submitting `/submit-request/complete` placeholder
 
 ## What Does Not Exist Yet
 
 - Registration
-- Full support request form
 - Screenshot upload
 - Ticket submission
 - Database request creation
+- Request-number generation
 - Request tracking page
+- Notifications
 - Dashboard business UI
 - Product APIs
 - Business logic
@@ -119,10 +127,21 @@ Completed successfully:
 - `/submit-request?platform=instagram` displayed the missing-category fallback
 - Mobile viewport check at 390px confirmed category cards are full-width, at least 96px tall, and have no horizontal overflow
 - Homepage platform cards now navigate to `/get-help`
+- `/submit-request?platform=instagram&category=account-disabled&lang=en` displayed the details form
+- Empty form submission showed clear inline errors and focused the name field
+- Invalid mobile number and very short problem description were blocked while preserving entered values
+- Telugu interface switch preserved entered values
+- Valid Telugu and English mixed text reached preview
+- Preview route displayed selected platform, category, name, handle, masked mobile number, masked email, description, and preferred language
+- Preview URL did not contain mobile, email, name, or problem description
+- Edit Details restored saved form values and preserved Telugu interface language
+- Continue action opened `/submit-request/complete` placeholder without submitting a request
+- Invalid platform and invalid category URLs showed simple fallback screens
+- Mobile, tablet, and desktop viewport checks confirmed no horizontal overflow and 56px submit button height
 
 ## Notes
 
-U05 is WORKING. Problem category selection, language switching, placeholder routing, invalid states, tests, build, startup, and visual verification pass.
+U06 is WORKING. Problem details form, validation, language switching, preview masking, edit restore, non-submitting placeholder, tests, build, startup, and visual verification pass.
 
 Implemented U02 work:
 
@@ -153,5 +172,13 @@ Implemented U05 work:
 - Safe query validation for platform, language, and category.
 - English/Telugu category names, descriptions, buttons, and error messages.
 - Submit-request placeholder with no inputs, upload, API call, or database write.
+
+Implemented U06 work:
+
+- Public problem details form for selected platform and category.
+- Shared validation for required fields, Indian mobile numbers, optional email, description length, preferred language, and consent.
+- Temporary session-state preview without sensitive URL parameters.
+- Masked mobile/email preview and Edit Details restore.
+- Continue placeholder only; no database write, screenshot upload, request number, tracking, or notifications.
 
 Do not run production build commands while development watchers are active; Next.js and NestJS both write generated output during those workflows.

@@ -7,26 +7,28 @@
 - U03: Admin Authentication and Authorization - complete
 - U04: Public Homepage and Platform Selection - complete
 - U05: Problem Category Selection - complete
+- U06: Submit Problem Details Form - complete
 
-## U05 Boundary
+## U06 Boundary
 
-U05 includes only:
+U06 includes only:
 
-- `/get-help` platform validation
-- English and Telugu language switcher
-- Large problem category cards for Instagram, Facebook, YouTube, and Other
-- Safe category navigation to `/submit-request`
-- Placeholder `/submit-request` next-step screen
-- Invalid platform and missing category states
-- Public help content tests
+- `/submit-request` problem details form
+- Client-side and shared validation
+- English and Telugu form labels, helpers, errors, preview copy, and loading copy
+- Temporary session-state preview flow
+- Masked mobile and email preview
+- Edit Details restore behavior
+- Non-submitting continue placeholder
+- Invalid platform/category fallback states
+- Validation and masking tests
 
-U05 excludes:
+U06 excludes:
 
 - Public user registration or login
-- Problem submission forms
-- Full support request form
 - Screenshot upload
 - Database request creation
+- Request-number generation
 - Request tracking pages
 - Ticket submission APIs
 - File upload APIs

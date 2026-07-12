@@ -1,0 +1,89 @@
+import { Language } from '../public-help-content';
+
+export const submitText = {
+  summaryTitle: { en: 'Selected problem', te: 'ఎంచుకున్న సమస్య' },
+  editProblem: { en: 'Edit problem', te: 'సమస్య మార్చండి' },
+  formTitle: { en: 'Tell us the details', te: 'వివరాలు చెప్పండి' },
+  name: { en: 'Your name', te: 'మీ పేరు' },
+  platformHandle: {
+    en: 'Instagram username, Facebook page, or YouTube channel name',
+    te: 'Instagram యూజర్‌నేమ్, Facebook పేజ్ లేదా YouTube ఛానల్ పేరు',
+  },
+  mobile: { en: 'Mobile number', te: 'మొబైల్ నంబర్' },
+  mobileHelp: { en: 'Example: 9876543210', te: 'ఉదాహరణ: 9876543210' },
+  email: { en: 'Email address — optional', te: 'ఈమెయిల్ — అవసరం లేకపోతే వదిలేయండి' },
+  description: { en: 'Tell us what happened', te: 'ఏం జరిగిందో చెప్పండి' },
+  descriptionHelp: {
+    en: 'Write in Telugu or English. Mention when the problem started and what message you saw.',
+    te: 'తెలుగు లేదా English లో రాయండి. సమస్య ఎప్పుడు మొదలైంది, ఏ మెసేజ్ కనిపించింది చెప్పండి.',
+  },
+  preferredLanguage: { en: 'Preferred language', te: 'మీకు కావాల్సిన భాష' },
+  consent: {
+    en: 'I agree that my information will be used only to review this support request.',
+    te: 'ఈ సహాయ అభ్యర్థనను పరిశీలించడానికి మాత్రమే నా సమాచారాన్ని ఉపయోగించడానికి నేను అంగీకరిస్తున్నాను.',
+  },
+  continue: { en: 'Preview details', te: 'వివరాలు చూడండి' },
+  loading: { en: 'Checking details...', te: 'వివరాలు చూస్తున్నాం...' },
+  validationSuccess: { en: 'Details look good.', te: 'వివరాలు సరిగ్గా ఉన్నాయి.' },
+  errorSummary: { en: 'Please fix these details.', te: 'దయచేసి ఈ వివరాలు సరిచేయండి.' },
+  previewTitle: { en: 'Check your details', te: 'మీ వివరాలు చూసుకోండి' },
+  maskedNotice: {
+    en: 'Your mobile number and email are hidden for privacy.',
+    te: 'గోప్యత కోసం మొబైల్ నంబర్ మరియు ఈమెయిల్ దాచబడ్డాయి.',
+  },
+  editDetails: { en: 'Edit Details', te: 'వివరాలు మార్చండి' },
+  continueNext: { en: 'Continue', te: 'కొనసాగించండి' },
+  finalPlaceholderTitle: { en: 'Next step', te: 'తర్వాత దశ' },
+  finalPlaceholderMessage: {
+    en: 'Request submission will be completed in the next step.',
+    te: 'అభ్యర్థన సమర్పించడం తర్వాత దశలో పూర్తవుతుంది.',
+  },
+  noPreviewTitle: { en: 'Details not found', te: 'వివరాలు కనిపించలేదు' },
+  noPreviewMessage: {
+    en: 'Please go back and fill the problem details again.',
+    te: 'దయచేసి వెనక్కి వెళ్లి సమస్య వివరాలు మళ్లీ నమోదు చేయండి.',
+  },
+};
+
+export const validationMessages: Record<string, Record<Language, string>> = {
+  'name.required': { en: 'Please enter your name.', te: 'దయచేసి మీ పేరు నమోదు చేయండి.' },
+  'name.tooShort': { en: 'Enter at least 2 letters.', te: 'కనీసం 2 అక్షరాలు నమోదు చేయండి.' },
+  'name.tooLong': { en: 'Name is too long.', te: 'పేరు చాలా పొడవుగా ఉంది.' },
+  'platformHandle.required': {
+    en: 'Please enter your username, page, or channel name.',
+    te: 'దయచేసి మీ యూజర్‌నేమ్, పేజ్ లేదా ఛానల్ పేరు నమోదు చేయండి.',
+  },
+  'platformHandle.tooLong': {
+    en: 'This name is too long.',
+    te: 'ఈ పేరు చాలా పొడవుగా ఉంది.',
+  },
+  'mobile.invalid': {
+    en: 'Please enter a valid mobile number.',
+    te: 'సరైన మొబైల్ నంబర్ నమోదు చేయండి.',
+  },
+  'email.invalid': {
+    en: 'Please enter a valid email address.',
+    te: 'సరైన ఈమెయిల్ నమోదు చేయండి.',
+  },
+  'email.tooLong': { en: 'Email is too long.', te: 'ఈమెయిల్ చాలా పొడవుగా ఉంది.' },
+  'description.required': {
+    en: 'Tell us a little more about the problem.',
+    te: 'మీ సమస్య గురించి కొంచెం వివరంగా చెప్పండి.',
+  },
+  'description.tooShort': {
+    en: 'Tell us a little more about the problem.',
+    te: 'మీ సమస్య గురించి కొంచెం వివరంగా చెప్పండి.',
+  },
+  'description.tooLong': {
+    en: 'Please make the problem details shorter.',
+    te: 'దయచేసి సమస్య వివరాలను కొంచెం తగ్గించండి.',
+  },
+  'preferredLanguage.required': {
+    en: 'Please select your preferred language.',
+    te: 'మీకు కావాల్సిన భాషను ఎంచుకోండి.',
+  },
+  'consent.required': {
+    en: 'Please agree before continuing.',
+    te: 'కొనసాగడానికి దయచేసి అంగీకరించండి.',
+  },
+};

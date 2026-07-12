@@ -12,7 +12,7 @@
 
 ## Current Scope
 
-U05 adds public problem category selection and a submit-request placeholder only. It does not add the full support request form, screenshot upload, ticket submission, database request creation, tracking pages, admin dashboard business UI, support request workflows, internal-note workflows, status update workflows, or product APIs.
+U06 adds the public problem details form, validation, preview, and non-submitting continue placeholder only. It does not add database request creation, request-number generation, screenshot storage, request tracking pages, admin dashboard business UI, notifications, support request workflows, internal-note workflows, status update workflows, or product APIs.
 
 ## Public Homepage Overview
 
@@ -21,6 +21,10 @@ The root web route `/` introduces the service in simple English and Telugu. It p
 ## Problem Category Selection Overview
 
 The `/get-help` route validates the `platform` query parameter for `instagram`, `facebook`, `youtube`, or `other`. It renders localized English/Telugu category choices from shared frontend content based on the issue categories created in U02. Selecting a category navigates to `/submit-request` with safe query parameters. U05 keeps `/submit-request` as a placeholder and performs no API call or database write.
+
+## Problem Details Form Overview
+
+The `/submit-request` route validates platform and category query parameters, then renders a client-side form for user details. Validation logic lives in `packages/shared` so it can be reused by later server-side request creation. Preview data is stored temporarily in `sessionStorage` and sensitive fields are not placed in URLs. The preview masks mobile numbers and email addresses. U06 performs no API call and no database write.
 
 ## Authentication Overview
 
