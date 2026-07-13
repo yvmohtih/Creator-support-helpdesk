@@ -12,17 +12,25 @@ import {
   validateProblemDetails,
 } from '@creator-support/shared';
 import {
+  AttachmentUploadedBy,
   Platform,
   PreferredLanguage,
   Prisma,
   RequestPriority,
   RequestStatus,
 } from '@prisma/client';
+import { randomUUID } from 'crypto';
 import { PrismaService } from '../../database/prisma.service';
 import { CreatePublicSupportRequestDto } from '../dto/create-public-support-request.dto';
 import { RequestNumberService } from './request-number.service';
+import {
+  ScreenshotUploadService,
+  StoredScreenshot,
+  UploadedScreenshotFile,
+} from './screenshot-upload.service';
 
 export interface SubmissionResult {
+  attachmentCount: number;
   requestNumber: string;
   platform: Platform;
   categoryName: string;
@@ -40,9 +48,11 @@ export class PublicSupportRequestService {
   constructor(
     @Inject(PrismaService) private readonly prisma: PrismaService,
     @Inject(RequestNumberService) private readonly requestNumbers: RequestNumberService,
+    @Inject(ScreenshotUploadService)
+    private readonly screenshotUploads: ScreenshotUploadService,
   ) {}
 
-  async submit(input: CreatePublicSupportRequestDto) {
+  async submit(input: CreatePublicSupportRequestDto, screenshots: UploadedScreenshotFile[] = []) {
     const existing = this.completedSubmissions.get(input.idempotencyKey);
 
     if (existing) {
@@ -55,7 +65,7 @@ export class PublicSupportRequestService {
       return inFlight;
     }
 
-    const submission = this.createSubmission(input);
+    const submission = this.createSubmission(input, screenshots);
     this.inFlightSubmissions.set(input.idempotencyKey, submission);
 
     try {
@@ -67,7 +77,10 @@ export class PublicSupportRequestService {
     }
   }
 
-  private async createSubmission(input: CreatePublicSupportRequestDto): Promise<SubmissionResult> {
+  private async createSubmission(
+    input: CreatePublicSupportRequestDto,
+    screenshots: UploadedScreenshotFile[],
+  ): Promise<SubmissionResult> {
     const categoryName = getRequestCategoryName(input.platform, input.category);
 
     if (!categoryName) {
@@ -102,13 +115,22 @@ export class PublicSupportRequestService {
       throw new BadRequestException('This problem category is no longer available.');
     }
 
+    const supportRequestId = randomUUID();
+    const storedScreenshots = await this.screenshotUploads.validateAndStore(
+      screenshots,
+      supportRequestId,
+    );
+
     const created = await this.createWithRequestNumberRetry({
       categoryId: category.id,
       categoryName,
       data: validation.data,
+      storedScreenshots,
+      supportRequestId,
     });
 
     return {
+      attachmentCount: storedScreenshots.length,
       requestNumber: created.requestNumber,
       platform: created.platform,
       categoryName,
@@ -121,6 +143,8 @@ export class PublicSupportRequestService {
     categoryId: string;
     categoryName: string;
     data: ProblemDetailsData;
+    storedScreenshots: StoredScreenshot[];
+    supportRequestId: string;
   }) {
     for (let attempt = 0; attempt < maxRequestNumberAttempts; attempt += 1) {
       const requestNumber = this.requestNumbers.generate();
@@ -129,6 +153,7 @@ export class PublicSupportRequestService {
         return await this.prisma.$transaction(async (transaction) => {
           const supportRequest = await transaction.supportRequest.create({
             data: {
+              id: input.supportRequestId,
               requestNumber,
               platform: input.data.platform as Platform,
               categoryId: input.categoryId,
@@ -155,6 +180,20 @@ export class PublicSupportRequestService {
             },
           });
 
+          if (input.storedScreenshots.length > 0) {
+            await transaction.requestAttachment.createMany({
+              data: input.storedScreenshots.map((file) => ({
+                fileSize: file.fileSize,
+                mimeType: file.mimeType,
+                originalFileName: file.originalFileName,
+                requestMessageId: null,
+                storagePath: file.storagePath,
+                supportRequestId: supportRequest.id,
+                uploadedBy: AttachmentUploadedBy.user,
+              })),
+            });
+          }
+
           return supportRequest;
         });
       } catch (error) {
@@ -163,9 +202,11 @@ export class PublicSupportRequestService {
         }
 
         if (this.isUniqueRequestNumberError(error)) {
+          await this.screenshotUploads.cleanup(input.storedScreenshots);
           throw new ConflictException('We could not submit your request. Please try again.');
         }
 
+        await this.screenshotUploads.cleanup(input.storedScreenshots);
         throw new InternalServerErrorException(
           'We could not submit your request. Please try again.',
         );

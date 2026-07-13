@@ -83,6 +83,10 @@ export function RequestSubmittedClient({ language }: RequestSubmittedClientProps
               label={submitText.submittedOn[language]}
               value={formatSubmittedDate(confirmation.submittedAt, language)}
             />
+            <PreviewItem
+              label={submitText.screenshotsSaved[language]}
+              value={String(confirmation.attachmentCount ?? 0)}
+            />
           </dl>
 
           {copyMessage ? (

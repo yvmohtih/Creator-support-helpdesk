@@ -4,7 +4,7 @@ Mobile-first social media technical support platform for rural users, small crea
 
 ## Current Status
 
-Unit U07 request saving, request-number generation, and confirmation is implemented and verified. Screenshot upload/storage, request tracking, dashboards, admin reply workflows, and notifications are intentionally not implemented yet.
+Unit U08 screenshot upload is implemented for the public request submission flow. Request tracking, dashboards, admin reply workflows, and notifications are intentionally not implemented yet.
 
 ## Stack
 
@@ -128,6 +128,31 @@ The confirmation page displays the generated request number, platform/category, 
 
 The Track Request action opens a placeholder at `/track-request`; request lookup is not implemented yet.
 
+## Screenshot Upload
+
+Screenshots are optional and are selected on the preview screen before final submission.
+
+Limits:
+
+- Maximum files per request: 3
+- Maximum size per file: 5 MB
+- Maximum combined upload size: 12 MB
+- Allowed formats: JPEG, JPG, PNG, WEBP
+
+Security and storage:
+
+- Files are validated on the server by count, size, combined size, MIME type, extension, and image signature.
+- Files are stored outside the database using the configured S3-compatible private storage provider.
+- Storage paths use generated IDs:
+
+```text
+support-requests/{request-id}/{generated-file-id}.{extension}
+```
+
+- Original filenames are stored only as metadata in `request_attachments`.
+- Public users never receive storage paths or bucket details.
+- If screenshots are selected, the request succeeds only when every screenshot uploads and every attachment row is saved. Uploaded objects are cleaned up on failure.
+
 ## Start
 
 Development:
@@ -168,11 +193,11 @@ Included:
 - Public problem category selection and submit-request placeholder
 - Public problem details form, validation, masked preview, and edit restore
 - Public request submission API with request-number generation and confirmation page
+- Optional private screenshot upload and attachment metadata storage
 
 Not included:
 
 - Registration
-- Screenshot upload
 - Request tracking
 - Admin dashboard business UI
 - Admin reply workflows

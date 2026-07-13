@@ -12,7 +12,7 @@
 
 ## Current Scope
 
-U07 saves a public support request after the preview screen, generates a readable request number, creates initial status history, and shows a confirmation page. It does not add screenshot storage, request tracking lookup, admin dashboard business UI, notifications, admin replies, internal-note workflows, status update workflows, or file upload APIs.
+U08 adds optional screenshot upload to public request submission. It stores screenshots in private S3-compatible object storage, saves metadata in `request_attachments`, and keeps request tracking lookup, admin dashboard business UI, notifications, admin replies, internal-note workflows, status update workflows, and admin download access out of scope.
 
 ## Public Homepage Overview
 
@@ -28,9 +28,31 @@ The `/submit-request` route validates platform and category query parameters, th
 
 ## Public Request Submission Overview
 
-The preview Submit Request action calls `POST /api/v1/public/support-requests` with the selected platform, category slug, problem details, consent, and a browser-generated idempotency key. The API validates the input, maps the category slug to the persisted category name, confirms the category is active, generates a request number, and creates the support request plus initial status history inside one database transaction.
+The preview Submit Request action calls `POST /api/v1/public/support-requests` with the selected platform, category slug, problem details, consent, a browser-generated idempotency key, and optional screenshot files. The API validates the input, maps the category slug to the persisted category name, confirms the category is active, generates a request number, and creates the support request plus initial status history inside one database transaction.
 
-On success, the frontend clears temporary form and preview state and stores only safe confirmation details in `sessionStorage`: request number, platform, category, masked mobile, and submitted date. The confirmation URL does not include user contact details, description, or request number.
+On success, the frontend clears temporary form, preview, and file state, then stores only safe confirmation details in `sessionStorage`: request number, platform, category, masked mobile, submitted date, and attachment count. The confirmation URL does not include user contact details, description, request number, or storage paths.
+
+## Screenshot Upload Overview
+
+Screenshots are selected on the preview screen and stay in temporary browser memory until final submission. The API accepts multipart form data when screenshots are present and JSON when they are not.
+
+Validation happens on both client and server. Server validation is authoritative and checks:
+
+- Maximum 3 files
+- Maximum 5 MB per file
+- Maximum 12 MB combined
+- JPEG, PNG, and WEBP MIME types
+- Matching extension
+- Image magic bytes
+- Duplicate file selection
+
+Storage uses private S3-compatible objects with generated paths:
+
+```text
+support-requests/{request-id}/{generated-file-id}.{extension}
+```
+
+The original filename is saved only as metadata. If screenshots are selected, the strategy is all-or-nothing: all screenshots must upload and all attachment rows must be saved. If a later upload or database insert fails, uploaded objects from that submission are deleted and the request is not reported as successful.
 
 ## Authentication Overview
 

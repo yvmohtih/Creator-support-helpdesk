@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import { IsBoolean, IsEmail, IsIn, IsOptional, IsString, MaxLength } from 'class-validator';
 
 const platforms = ['instagram', 'facebook', 'youtube', 'other'] as const;
@@ -31,6 +32,7 @@ export class CreatePublicSupportRequestDto {
   @IsOptional()
   @IsEmail()
   @MaxLength(254)
+  @Transform(({ value }) => (value === '' ? undefined : value))
   email?: string;
 
   @IsString()
@@ -42,5 +44,6 @@ export class CreatePublicSupportRequestDto {
   preferredLanguage!: (typeof languages)[number];
 
   @IsBoolean()
+  @Transform(({ value }) => value === true || value === 'true')
   consent!: boolean;
 }

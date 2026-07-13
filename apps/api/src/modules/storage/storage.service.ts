@@ -1,4 +1,4 @@
-import { S3Client } from '@aws-sdk/client-s3';
+import { DeleteObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
@@ -18,5 +18,31 @@ export class StorageService {
       },
       forcePathStyle: true,
     });
+  }
+
+  async putPrivateObject(input: {
+    body: Buffer;
+    contentLength: number;
+    contentType: string;
+    storagePath: string;
+  }) {
+    await this.client.send(
+      new PutObjectCommand({
+        Body: input.body,
+        Bucket: this.bucket,
+        ContentLength: input.contentLength,
+        ContentType: input.contentType,
+        Key: input.storagePath,
+      }),
+    );
+  }
+
+  async deleteObject(storagePath: string) {
+    await this.client.send(
+      new DeleteObjectCommand({
+        Bucket: this.bucket,
+        Key: storagePath,
+      }),
+    );
   }
 }

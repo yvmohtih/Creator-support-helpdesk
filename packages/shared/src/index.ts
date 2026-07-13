@@ -6,6 +6,7 @@ export {
   normalizeIndianMobile,
   getRequestCategoryName,
   requestCategoryNameBySlug,
+  screenshotUploadLimits,
   validateProblemDetails,
 } from './problem-details';
 export type {

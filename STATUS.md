@@ -2,7 +2,7 @@
 
 ## Current Unit
 
-U07: Save Request, Generate Request Number, and Confirmation
+U08: Screenshot Upload
 
 ## Status
 
@@ -69,11 +69,16 @@ July 13, 2026
 - Public `/request-submitted` confirmation page with copy action
 - Non-tracking `/track-request` placeholder linked from confirmation
 - Submit attempt rate limiting foundation
+- Optional screenshot upload on the preview screen
+- Client-side screenshot previews with remove action
+- Server-side screenshot validation for count, size, MIME type, extension, and magic bytes
+- Private S3-compatible screenshot storage through generated storage paths
+- Screenshot attachment metadata saved in `request_attachments`
+- Upload cleanup when storage or database processing fails
 
 ## What Does Not Exist Yet
 
 - Registration
-- Screenshot upload
 - Request tracking page
 - Notifications
 - Dashboard business UI
@@ -150,14 +155,35 @@ Completed successfully:
 - Confirmation URL did not contain name, mobile, email, description, or request number
 - Copy Request Number copied the generated request number to the browser clipboard and showed a success message
 - Track Request opened a simple placeholder instead of a 404
+- Request submission without screenshots still succeeds
+- Valid PNG/JPEG/WEBP screenshots pass server-side validation
+- Unsupported files, misleading extensions, duplicate selections, oversized files, too many files, and combined oversize selections are rejected
+- Screenshot storage paths use generated IDs and do not include original filenames
+- Attachment metadata links to the correct support request
+- Failed upload/database paths trigger cleanup of already-uploaded private objects
+- Local app startup succeeded for U08 at `http://127.0.0.1:3000` and `http://127.0.0.1:4000`
+- Temporary local S3-compatible endpoint accepted private upload objects through the app storage service
+- Multipart submission with one valid PNG screenshot returned a request number and `attachmentCount: 1`
+- Retrying the same idempotency key returned the same request number and did not duplicate attachments
+- Multipart submission with three valid screenshots returned `attachmentCount: 3`
+- Database verification confirmed attachment rows, status history, generated storage paths, original filename metadata, MIME type, file size, and `uploaded_by = user`
+- Private storage verification confirmed generated objects existed under request-specific paths
+- Browser verification confirmed mobile upload UI copy, privacy warning, Select Photos button, file count, and Telugu upload copy
 
 ## Notes
 
-U07 is WORKING. Request saving, server validation, request-number generation, idempotent submit handling, initial status history, confirmation page, tests, build, startup, and manual verification pass.
+U08 is WORKING. Optional screenshot upload, client preview/remove UI, server validation, private storage upload, attachment metadata creation, cleanup behavior, no-screenshot submission, tests, build, startup, and manual verification pass.
 
 Known U07 limitation:
 
 - Public submit idempotency and rate limiting are in-memory MVP safeguards. They prevent repeat clicks in the running process, but they reset on server restart.
+
+Known U08 limitations:
+
+- Upload idempotency follows the same in-memory MVP model as U07 and resets on server restart.
+- Image metadata stripping is not implemented.
+- Admin screenshot viewing and signed download URLs are not implemented yet.
+- Manual upload verification used a temporary local S3-compatible test endpoint because no real local S3 service was running at `localhost:9000`.
 
 Implemented U02 work:
 
@@ -207,5 +233,14 @@ Implemented U07 work:
 - Confirmation page that shows only safe details and clears temporary form/preview state after success.
 - Track Request placeholder only; no request lookup is implemented yet.
 - Seed data aligned with all public category cards.
+
+Implemented U08 work:
+
+- Optional screenshot picker on the preview step before final submission.
+- Client validation for 3 files maximum, 5 MB per file, 12 MB combined, allowed image types, and duplicate selections.
+- Server validation for count, size, MIME type, extension, and image signatures.
+- Private S3-compatible upload using generated storage paths: `support-requests/{request-id}/{generated-file-id}.{extension}`.
+- Attachment metadata stored in `request_attachments`; raw image data is never stored in the database.
+- All-or-nothing attachment strategy: when screenshots are selected, all must upload and all attachment rows must save, or the request returns an error and uploaded objects are cleaned up.
 
 Do not run production build commands while development watchers are active; Next.js and NestJS both write generated output during those workflows.

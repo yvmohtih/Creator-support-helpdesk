@@ -10,6 +10,7 @@ export const problemDetailsPreviewKey = 'creator-support:problem-details-preview
 export const requestConfirmationKey = 'creator-support:request-confirmation';
 
 export interface StoredRequestConfirmation {
+  attachmentCount: number;
   categoryName: string;
   language: 'en' | 'te';
   maskedMobile: string;

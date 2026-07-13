@@ -2,6 +2,17 @@
 
 ## 2026-07-13
 
+### U08: Screenshot Upload
+
+- Added optional screenshot selection to the preview step before final request submission.
+- Added mobile-friendly upload copy, privacy warning, file count, thumbnail previews, remove buttons, and upload validation messages in English and Telugu.
+- Added multipart request submission when screenshots are selected while preserving JSON submission for requests without screenshots.
+- Added server-side validation for maximum file count, per-file size, combined size, MIME type, file extension, duplicate files, and image magic bytes.
+- Added private S3-compatible object uploads with generated storage paths that do not expose original filenames.
+- Added attachment metadata creation in `request_attachments` for successfully uploaded screenshots.
+- Added cleanup of uploaded objects when a later upload or database write fails.
+- Added tests for valid uploads, invalid files, duplicate selection, safe paths, attachment metadata, idempotent submit, and cleanup behavior.
+
 ### U07: Save Request, Generate Request Number, and Confirmation
 
 - Added public support request submission API with server-side validation.

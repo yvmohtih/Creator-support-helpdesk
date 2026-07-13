@@ -32,6 +32,53 @@ export const submitText = {
     en: 'Your mobile number and email are hidden for privacy.',
     te: 'గోప్యత కోసం మొబైల్ నంబర్ మరియు ఈమెయిల్ దాచబడ్డాయి.',
   },
+  uploadTitle: {
+    en: 'Upload screenshots — optional',
+    te: 'స్క్రీన్‌షాట్‌లు అప్‌లోడ్ చేయండి — అవసరం లేకపోతే వదిలేయండి',
+  },
+  uploadHelp: {
+    en: 'Screenshots help us understand the problem faster.',
+    te: 'స్క్రీన్‌షాట్‌లు మీ సమస్యను త్వరగా అర్థం చేసుకోవడానికి సహాయపడతాయి.',
+  },
+  uploadPrivacy: {
+    en: 'Please hide passwords, OTPs, bank details, and other private information before uploading.',
+    te: 'అప్‌లోడ్ చేసే ముందు పాస్‌వర్డ్‌లు, OTPలు, బ్యాంక్ వివరాలు మరియు వ్యక్తిగత సమాచారాన్ని దాచండి.',
+  },
+  uploadGuidance: {
+    en: 'You can upload up to 3 screenshots. JPG, PNG, and WEBP only. 5 MB each.',
+    te: 'మీరు గరిష్టంగా 3 స్క్రీన్‌షాట్‌లు అప్‌లోడ్ చేయవచ్చు. JPG, PNG, WEBP మాత్రమే. ఒక్కొక్కటి 5 MB.',
+  },
+  selectPhotos: { en: 'Select Photos', te: 'ఫోటోలు ఎంచుకోండి' },
+  selectedFiles: { en: 'Selected screenshots', te: 'ఎంచుకున్న స్క్రీన్‌షాట్‌లు' },
+  removeScreenshot: { en: 'Remove', te: 'తొలగించండి' },
+  dropScreenshots: { en: 'Drop screenshots here', te: 'స్క్రీన్‌షాట్‌లను ఇక్కడ వదలండి' },
+  processingScreenshots: { en: 'Checking screenshots...', te: 'స్క్రీన్‌షాట్‌లను చూస్తున్నాం...' },
+  screenshotAdded: { en: 'Screenshot added.', te: 'స్క్రీన్‌షాట్ జోడించబడింది.' },
+  screenshotRemoved: { en: 'Screenshot removed.', te: 'స్క్రీన్‌షాట్ తొలగించబడింది.' },
+  screenshotDuplicate: {
+    en: 'This screenshot is already selected.',
+    te: 'ఈ స్క్రీన్‌షాట్ ఇప్పటికే ఎంచుకున్నారు.',
+  },
+  screenshotTooMany: {
+    en: 'You can upload up to 3 screenshots.',
+    te: 'మీరు గరిష్టంగా 3 స్క్రీన్‌షాట్‌లు అప్‌లోడ్ చేయవచ్చు.',
+  },
+  screenshotTooLarge: {
+    en: 'This image is too large. Choose an image smaller than 5 MB.',
+    te: 'ఈ చిత్రం చాలా పెద్దది. 5 MB కంటే చిన్నదాన్ని ఎంచుకోండి.',
+  },
+  screenshotCombinedTooLarge: {
+    en: 'The selected screenshots are too large together.',
+    te: 'ఎంచుకున్న స్క్రీన్‌షాట్‌ల మొత్తం పరిమాణం చాలా ఎక్కువగా ఉంది.',
+  },
+  screenshotUnsupported: {
+    en: 'This file type is not supported.',
+    te: 'ఈ ఫైల్ రకం అనుమతించబడదు.',
+  },
+  screenshotBroken: {
+    en: 'Preview is not available for this image.',
+    te: 'ఈ చిత్రానికి ప్రివ్యూ అందుబాటులో లేదు.',
+  },
   editDetails: { en: 'Edit Details', te: 'వివరాలు మార్చండి' },
   continueNext: { en: 'Continue', te: 'కొనసాగించండి' },
   submitRequest: { en: 'Submit Request', te: 'అభ్యర్థన పంపండి' },
@@ -47,6 +94,7 @@ export const submitText = {
   },
   requestNumber: { en: 'Request number', te: 'రిక్వెస్ట్ నంబర్' },
   submittedOn: { en: 'Submitted on', te: 'పంపిన తేదీ' },
+  screenshotsSaved: { en: 'Screenshots saved', te: 'సేవ్ చేసిన స్క్రీన్‌షాట్‌లు' },
   copyRequestNumber: { en: 'Copy Request Number', te: 'రిక్వెస్ట్ నంబర్ కాపీ చేయండి' },
   copiedRequestNumber: { en: 'Request number copied.', te: 'రిక్వెస్ట్ నంబర్ కాపీ అయింది.' },
   copyUnavailable: {

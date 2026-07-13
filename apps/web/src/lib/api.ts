@@ -35,6 +35,7 @@ export interface SubmitSupportRequestPayload {
 }
 
 export interface SubmitSupportRequestResult {
+  attachmentCount: number;
   categoryName: string;
   maskedMobile: string;
   platform: string;
@@ -42,15 +43,27 @@ export interface SubmitSupportRequestResult {
   submittedAt: string;
 }
 
-export async function submitSupportRequest(payload: SubmitSupportRequestPayload) {
-  const response = await fetch(`${API_BASE_URL}/public/support-requests`, {
-    body: JSON.stringify(payload),
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-  });
+export async function submitSupportRequest(
+  payload: SubmitSupportRequestPayload,
+  screenshots: File[] = [],
+) {
+  const request =
+    screenshots.length > 0
+      ? {
+          body: supportRequestFormData(payload, screenshots),
+          credentials: 'include' as const,
+          method: 'POST',
+        }
+      : {
+          body: JSON.stringify(payload),
+          credentials: 'include' as const,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          method: 'POST',
+        };
+
+  const response = await fetch(`${API_BASE_URL}/public/support-requests`, request);
 
   if (!response.ok) {
     throw new Error('SUBMIT_FAILED');
@@ -59,4 +72,20 @@ export async function submitSupportRequest(payload: SubmitSupportRequestPayload)
   const body = (await response.json()) as { data: SubmitSupportRequestResult };
 
   return body.data;
+}
+
+function supportRequestFormData(payload: SubmitSupportRequestPayload, screenshots: File[]) {
+  const formData = new FormData();
+
+  for (const [key, value] of Object.entries(payload)) {
+    if (value !== undefined) {
+      formData.append(key, String(value));
+    }
+  }
+
+  for (const screenshot of screenshots) {
+    formData.append('screenshots', screenshot, screenshot.name);
+  }
+
+  return formData;
 }

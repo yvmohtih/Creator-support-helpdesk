@@ -1,6 +1,13 @@
 export type PreferredLanguage = 'en' | 'te';
 export type SupportPlatform = 'instagram' | 'facebook' | 'youtube' | 'other';
 
+export const screenshotUploadLimits = {
+  allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
+  maxCombinedSizeBytes: 12 * 1024 * 1024,
+  maxFileSizeBytes: 5 * 1024 * 1024,
+  maxFiles: 3,
+};
+
 export const requestCategoryNameBySlug: Record<SupportPlatform, Record<string, string>> = {
   instagram: {
     'account-disabled': 'Account disabled',

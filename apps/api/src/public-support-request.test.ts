@@ -4,6 +4,11 @@ import { describe, expect, it, vi } from 'vitest';
 import { CreatePublicSupportRequestDto } from './modules/public-support/dto/create-public-support-request.dto';
 import { PublicSupportRequestService } from './modules/public-support/services/public-support-request.service';
 import { RequestNumberService } from './modules/public-support/services/request-number.service';
+import {
+  ScreenshotUploadService,
+  StoredScreenshot,
+  UploadedScreenshotFile,
+} from './modules/public-support/services/screenshot-upload.service';
 
 const baseInput: CreatePublicSupportRequestDto = {
   category: 'account-disabled',
@@ -22,7 +27,9 @@ function createService(options?: {
   category?: { id: string; isActive: boolean; platform: Platform } | null;
   requestNumbers?: string[];
   statusHistoryError?: Error;
+  storedScreenshots?: StoredScreenshot[];
   transactionErrors?: unknown[];
+  uploadError?: Error;
 }) {
   const category = options?.category ?? {
     id: 'category-1',
@@ -44,6 +51,7 @@ function createService(options?: {
 
     return { ...data, id: 'history-1' };
   });
+  const requestAttachmentCreateMany = vi.fn(async ({ data }) => ({ count: data.length }));
   const issueCategoryFindUnique = vi.fn(async () => category);
   const transactionErrors = [...(options?.transactionErrors ?? [])];
   const transaction = vi.fn(async (callback) => {
@@ -54,6 +62,7 @@ function createService(options?: {
     }
 
     return callback({
+      requestAttachment: { createMany: requestAttachmentCreateMany },
       requestStatusHistory: { create: statusHistoryCreate },
       supportRequest: { create: supportRequestCreate },
     });
@@ -61,23 +70,43 @@ function createService(options?: {
   const requestNumberService = {
     generate: vi.fn(() => generatedNumbers.shift() ?? 'RB-2026-HJKLMN'),
   } as unknown as RequestNumberService;
+  const screenshotUploadService = {
+    cleanup: vi.fn(async () => undefined),
+    validateAndStore: vi.fn(async () => {
+      if (options?.uploadError) {
+        throw options.uploadError;
+      }
+
+      return options?.storedScreenshots ?? [];
+    }),
+  } as unknown as ScreenshotUploadService;
   const service = new PublicSupportRequestService(
     {
       $transaction: transaction,
       issueCategory: { findUnique: issueCategoryFindUnique },
     } as never,
     requestNumberService,
+    screenshotUploadService,
   );
 
   return {
     issueCategoryFindUnique,
+    requestAttachmentCreateMany,
     requestNumberService,
+    screenshotUploadService,
     service,
     statusHistoryCreate,
     supportRequestCreate,
     transaction,
   };
 }
+
+const pngScreenshot: UploadedScreenshotFile = {
+  buffer: Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+  mimetype: 'image/png',
+  originalname: 'screen.png',
+  size: 8,
+};
 
 describe('public support requests', () => {
   it('saves a valid request and returns safe confirmation data', async () => {
@@ -88,6 +117,7 @@ describe('public support requests', () => {
     const result = await service.submit(baseInput);
 
     expect(result).toEqual({
+      attachmentCount: 0,
       categoryName: 'Account disabled',
       maskedMobile: '••••••3210',
       platform: Platform.instagram,
@@ -114,6 +144,70 @@ describe('public support requests', () => {
         oldStatus: null,
         supportRequestId: 'support-request-1',
       },
+    });
+  });
+
+  it('submits without files and does not create attachment rows', async () => {
+    const { requestAttachmentCreateMany, screenshotUploadService, service } = createService();
+
+    const result = await service.submit(baseInput);
+
+    expect(result.attachmentCount).toBe(0);
+    expect(screenshotUploadService.validateAndStore).toHaveBeenCalledWith(
+      [],
+      expect.stringMatching(/^[0-9a-f-]{36}$/),
+    );
+    expect(requestAttachmentCreateMany).not.toHaveBeenCalled();
+  });
+
+  it('stores attachment metadata for one valid screenshot', async () => {
+    const storedScreenshot = {
+      fileSize: 8,
+      mimeType: 'image/png',
+      originalFileName: 'సమస్య.png',
+      storagePath: 'support-requests/00000000-0000-0000-0000-000000000001/generated-file-id.png',
+    };
+    const { requestAttachmentCreateMany, service } = createService({
+      storedScreenshots: [storedScreenshot],
+    });
+
+    const result = await service.submit(baseInput, [pngScreenshot]);
+
+    expect(result.attachmentCount).toBe(1);
+    expect(requestAttachmentCreateMany).toHaveBeenCalledWith({
+      data: [
+        {
+          fileSize: 8,
+          mimeType: 'image/png',
+          originalFileName: 'సమస్య.png',
+          requestMessageId: null,
+          storagePath:
+            'support-requests/00000000-0000-0000-0000-000000000001/generated-file-id.png',
+          supportRequestId: 'support-request-1',
+          uploadedBy: 'user',
+        },
+      ],
+    });
+  });
+
+  it('stores metadata for three valid screenshots', async () => {
+    const storedScreenshots = [1, 2, 3].map((index) => ({
+      fileSize: 8,
+      mimeType: 'image/png',
+      originalFileName: `screen-${index}.png`,
+      storagePath: `support-requests/request-id/file-${index}.png`,
+    }));
+    const { requestAttachmentCreateMany, service } = createService({ storedScreenshots });
+
+    const result = await service.submit(baseInput, [pngScreenshot, pngScreenshot, pngScreenshot]);
+
+    expect(result.attachmentCount).toBe(3);
+    expect(requestAttachmentCreateMany).toHaveBeenCalledWith({
+      data: expect.arrayContaining([
+        expect.objectContaining({ storagePath: 'support-requests/request-id/file-1.png' }),
+        expect.objectContaining({ storagePath: 'support-requests/request-id/file-2.png' }),
+        expect.objectContaining({ storagePath: 'support-requests/request-id/file-3.png' }),
+      ]),
     });
   });
 
@@ -184,6 +278,28 @@ describe('public support requests', () => {
     expect(supportRequestCreate).toHaveBeenCalledTimes(1);
   });
 
+  it('does not duplicate attachments for repeated submissions with one idempotency key', async () => {
+    const { requestAttachmentCreateMany, service } = createService({
+      storedScreenshots: [
+        {
+          fileSize: 8,
+          mimeType: 'image/png',
+          originalFileName: 'screen.png',
+          storagePath: 'support-requests/request-id/file.png',
+        },
+      ],
+    });
+
+    const [first, second] = await Promise.all([
+      service.submit(baseInput, [pngScreenshot]),
+      service.submit(baseInput, [pngScreenshot]),
+    ]);
+
+    expect(first).toEqual(second);
+    expect(first.attachmentCount).toBe(1);
+    expect(requestAttachmentCreateMany).toHaveBeenCalledTimes(1);
+  });
+
   it('retries when a generated request number collides', async () => {
     const { service, supportRequestCreate, transaction } = createService({
       requestNumbers: ['RB-2026-ABCDEF', 'RB-2026-GHJKLM'],
@@ -205,11 +321,27 @@ describe('public support requests', () => {
   });
 
   it('does not convert transaction failures into partial success', async () => {
-    const { service } = createService({
+    const { screenshotUploadService, service } = createService({
+      storedScreenshots: [
+        {
+          fileSize: 8,
+          mimeType: 'image/png',
+          originalFileName: 'screen.png',
+          storagePath: 'support-requests/request-id/file.png',
+        },
+      ],
       statusHistoryError: new Error('history insert failed'),
     });
 
     await expect(service.submit(baseInput)).rejects.toThrow(InternalServerErrorException);
+    expect(screenshotUploadService.cleanup).toHaveBeenCalledWith([
+      {
+        fileSize: 8,
+        mimeType: 'image/png',
+        originalFileName: 'screen.png',
+        storagePath: 'support-requests/request-id/file.png',
+      },
+    ]);
   });
 });
 

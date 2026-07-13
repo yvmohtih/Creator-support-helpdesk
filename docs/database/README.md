@@ -146,7 +146,7 @@ Indexes:
 
 ### request_attachments
 
-Stores uploaded file metadata only.
+Stores uploaded file metadata only. Screenshot binary data is stored in private object storage, not PostgreSQL.
 
 Columns:
 
@@ -164,6 +164,14 @@ Upload sources:
 
 - `user`
 - `admin`
+
+U08 screenshot records:
+
+- `support_request_id` points to the newly created support request.
+- `request_message_id` is `null` for initial public screenshots.
+- `storage_path` uses `support-requests/{request-id}/{generated-file-id}.{extension}`.
+- `original_file_name` preserves the user-visible filename as metadata only.
+- `mime_type`, `file_size`, and `uploaded_by = user` are saved for each uploaded screenshot.
 
 Indexes:
 
